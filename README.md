@@ -1,16 +1,20 @@
-<h1 align="center">451saver</h1>
-
-<p align="center">
-  <b>Кроссплатформенный CLI-инструмент для пакетного скачивания видео с YouTube<br>
-  с AI-озвучкой и субтитрами от Яндекса</b>
-</p>
-
+<div align="center">
+  <h1 align="center">451saver</h1>
+  <p align="center">
+    Кроссплатформенный CLI-инструмент для пакетного скачивания YouTube-видео<br>
+  с AI-озвучкой и субтитрами от Яндекса
+  </p>
+</div>
 <p align="center">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blue">
   <img src="https://img.shields.io/badge/interface-CLI-lightgrey">
   <img src="https://img.shields.io/badge/dependencies-bundled-success">
   <img src="https://img.shields.io/badge/status-active-brightgreen">
 </p>
+
+<p align="center" />
+<a href="https://github.com/telenkor/451saver/releases"><strong>Скачать</strong></a>
+<p />
 
 ---
 
@@ -38,20 +42,15 @@
 ## 📑 Содержание
 
 - [✨ Возможности](#-возможности)
-- [🖥️ Платформы](#️-платформы)
-- [⚙️ Как это работает](#️-как-это-работает)
+- [🖥️ Платформы](#-платформы)
+- [⚙️ Как это работает](#-как-это-работает)
 - [🚀 Режимы работы](#-режимы-работы)
-- [🎚️ Настройки загрузки](#️-настройки-загрузки)
-- [🧠 AI-озвучка](#-ai-озвучка)
-- [🌐 Настройка браузера](#-настройка-браузера)
-- [📁 Рабочая директория](#-рабочая-директория)
-- [⏸️ Пауза и очереди](#️-пауза-и-очереди)
-- [🪟 Windows](#-windows)
+- [🛠 Настройки загрузки](#-настройки-загрузки)
+- [💎 Особенности](#-особенности)
+- [⌛️ Запуск скрипта](#-запуск-скрипта)
+- [🪓 Системные требования для Windows](#-системные-требования-для-windows)
+- [🔧 Установка](#-установка)
 - [📸 Скриншоты](#-скриншоты)
-- [📦 Установка](#-установка)
-- [📌 Почему 451saver](#-почему-451saver)
-- [🛠️ Статус](#️-статус)
-- [🤝 Обратная связь](#-обратная-связь)
 
 ---
 
@@ -68,7 +67,7 @@
 - 🧯 Простое управление
 - 🧩 Все зависимости уже внутри — ничего устанавливать не нужно*
 
-* см. раздел о [Windows](#-Windows)
+* см. раздел о [Windows](#-системные-требования-для-windows)
 
 ---
 
@@ -92,7 +91,7 @@
 - [`vot-cli-live`](https://github.com/fantomcheg/vot-cli-live) - загрузка ИИ озвучки и субтитров от Яндекса
 - [`node`](https://nodejs.org/en) - служебный модуль для работы `yt-dlp` и `vot-cli-live`
 
-👉 Пользователь взаимодействует только с меню — вся сложность скрыта
+👉 Пользователь взаимодействует только с простым меню — вся сложность скрыта.
 
 ---
 
@@ -155,7 +154,7 @@
 
 ---
 
-## 🛠 Особенности
+## 💎 Особенности
 
 ### 🔊 Аудио
 
@@ -188,14 +187,14 @@
 
 ---
 
-## 🛠 При запуске скрипта
+## ⌛️ Запуск скрипта
 При первом запуске скрипта происходит запрос Рабочей диреткории, Браузера и Профиля браузера. При повторном запуске спрашивается оставить ли текущие параметры или задать новые.
 
-## 📁 Рабочая директория
+### 📁 Рабочая директория
 
-Место, куда будет сохраняться контент
+Место, куда будет сохраняться контент.
 
-## 🌐 Настройка браузера
+### 🌐 Настройка браузера
 
 - выбрать браузер
 - выбрать профиль браузера*
@@ -205,36 +204,53 @@
 - **Firefox**
 - **Google Chrome**
 
-⚠️ * Необходимый профиль подсвечен, но не исключено, что иногда нужно будет выбрать другой профиль
+⚠️ * Необходимый профиль подсвечен, но не исключено, что иногда нужно будет выбрать другой профиль.
 
-💡 Выбранные настройки хранятся в файле `config.txt` рядом со скриптом
+💡 Выбранные настройки хранятся в файле `config.txt` рядом со скриптом.
 
 ---
 
-## 🪟 Системные требования для Windows
+## 🪓 Системные требования для Windows
 
-Обязательное требование только одно: PowerShell версии 7 или выше. Дистрибутив с пакетом PowerShell включен в поставку и находится в директории **requirements/**
+Обязательное требование только одно: PowerShell версии 7 или выше. Дистрибутив с пакетом PowerShell включен в поставку и находится в директории **requirements/**.
+
+---
+
+## 🔧 Установка
+
+- Скачать архив из [**Releases**](https://github.com/telenkor/451saver/releases) и распаковать в любом месте.
+- Для MacOS и Linux установить права на выполнение `chmod +x run.command`
 
 ---
 
 ## 📸 Скриншоты
 
-### Главное меню
-![menu](assets/menu.png)
+### Запуск скрипта
+![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_01.png)
 
-### Пакетный режим
-![batch](assets/batch.png)
+### Выбор режима
+![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_02.png)
 
-### Прогресс загрузки
-![progress](assets/progress.png)
+### Разрешение видео
+![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_03.png)
 
----
+### Предложение скачать ИИ-озвучку
+![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_04.png)
 
-## 📦 Установка
+### Форсирование языка
+![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_05.png)
 
-### 🔹 Вариант 1 (рекомендуется)
+### Пауза при загрузке ИИ-озвучки
+![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_06.png)
 
-Скачать архив из **Releases** и распаковать в любом месте.
+### Пакетный режим: ожидание файла-списка ссылок
+![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_07.png)
+
+### Генерация списка для канала завершена
+![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_08.png)
+
+### Пакетный режим: прогресс загрузки
+![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_09.png)
 
 ---
 
