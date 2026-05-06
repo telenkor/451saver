@@ -216,7 +216,7 @@
 
 ## 🪓 Системные требования для Windows
 
-Обязательное требование только одно: PowerShell версии 7 или выше. Дистрибутив с пакетом PowerShell включен в поставку и находится в директории **requirements/**.
+Обязательное требование только одно: PowerShell версии 7 или выше. Дистрибутив с пакетом PowerShell 7.x.x включен в поставку и находится в директории **requirements/**.
 
 ---
 
@@ -224,6 +224,7 @@
 
 - скачать архив из [**Releases**](https://github.com/telenkor/451saver/releases) и распаковать в любом месте
 - для MacOS или Linux установить права на выполнение: `chmod +x run.command` или `chmod +x run.sh`
+- для Windows из каталога **requirements/** установить PowerShell 7.x.x
 
 ---
 
