@@ -18,7 +18,7 @@ Clear-Host
 # Название и версия ПО
 # =========================
 
-$ABOUT = "451saver v3.5"
+$ABOUT = "451saver v3.5.1"
 
 # Меняем заголовок окна
 $Host.UI.RawUI.WindowTitle = $ABOUT
@@ -61,7 +61,7 @@ function logo {
      Write-Host "$($GRAY)█   ╚════██║██████╔╝███████╗██████╔╝██║  ██║  ╚██╔╝  ███████╗██║  ██║   █$($NORMAL)"
     Write-Host "$($GRAY)█        ╚═╝╚═════╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝   █$($NORMAL)"
     Write-Host "$($GRAY)███ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ███$($NORMAL)"
-    Write-Host "$($GRAY)█▀$($NORMAL)                          $($GRAY)-  $ABOUT  -$($NORMAL)                        $($GRAY)▀█$($NORMAL)"
+    Write-Host "$($GRAY)█▀$($NORMAL)                        $($GRAY)-  $ABOUT  -$($NORMAL)                        $($GRAY)▀█$($NORMAL)"
     Write-Host "$($GRAY)█ ▄$($NORMAL)                    $($GRAY)© 2016–2026 Dmitry Chushkin$($NORMAL)                    $($GRAY)▄ █$($NORMAL)"
     Write-Host "$($GRAY)█ ▓$($NORMAL)                            $($GRAY)dev@36pix.ru$($NORMAL)                           $($GRAY)▓ █$($NORMAL)"
     Write-Host "$($GRAY)▄ ▓▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▓ ▄$($NORMAL)"
@@ -160,28 +160,9 @@ function error {
     Write-Host "${STRONG}${RED}[x ERROR] ${MSG}${NORMAL}"
 }
 
-function progress {
-    param($1, $2)
-    $spaces = $1
-    $message = $2
-    $spin = @('-', '\', '|', '/')
-    $i = 0
-
-    # Создаем строку с отступами
-    $indent = " " * $spaces
-
-    while ($true) {
-        # Выводим отступ, сообщение, затем цветной спиннер и сброс
-        Write-Host -NoNewline "`r$indent$message ${GREEN}$($spin[$i % 4])${NORMAL}"
-        $i++
-        Start-Sleep -Milliseconds 100
-    }
-}
-
 function press_enter {
     Write-Host ""
     info_color 6 "Press Enter to restart or Ctrl+C to exit" $CYAN
-    # -s: не выводить нажатый символ, -n 1: читать ровно 1 символ
     Read-Host -AsSecureString | Out-Null
 }
 
@@ -610,65 +591,53 @@ function detect_default_profile {
                 # 1. Получаем целевой путь из секции [Install...]
                 $_path = $null
                 $in_inst = $false
-                $inInstSections = $iniContent -split '(?=\r?\[Install)'
+                # Разбиваем текст перед КАЖДЫМ заголовком секции (строка начинается с '[')
+                $allSections = $iniContent -split '(?m)^(?=\[)'
                 
-                foreach ($section in $inInstSections) {
+                foreach ($section in $allSections) {
+                    # Ищем только секцию Install
                     if ($section -match '^\[Install[^\]]*\]') {
-                        $defaultMatch = [regex]::Match($section, '(?m)^Default=(.+)$')
-                        $lockedMatch = [regex]::Match($section, '(?m)^Locked=1$')
+                        # Добавляем \r? чтобы проглотить невидимый возврат каретки Windows
+                        $defaultMatch = [regex]::Match($section, '(?m)^Default=(.+)\r?$')
+                        $lockedMatch  = [regex]::Match($section, '(?m)^Locked=1\r?$')
                         if ($defaultMatch.Success -and $lockedMatch.Success) {
-                            $_path = $defaultMatch.Groups[1].Value.Trim()
+                            $_path_def = $defaultMatch.Groups[1].Value.Trim()
                             break
                         }
                     }
                 }
 
                 # 2. Проверяем его в секциях [Profile...]
-                if ($_path) {
+                if ($_path_def) {
                     $profileSections = $iniContent -split '(?=\r?\[Profile)'
                     $found = $false
                     
-                    foreach ($section in $profileSections) {
-                        if ($section -match '^\[Profile[^\]]*\]') {
-                            $pathMatch = [regex]::Match($section, '(?m)^Path=(.+)$')
-                            $relMatch = [regex]::Match($section, '(?m)^IsRelative=(.+)$')
-                            
-                            $path = if ($pathMatch.Success) { $pathMatch.Groups[1].Value.Trim() } else { "" }
-                            $rel = if ($relMatch.Success) { $relMatch.Groups[1].Value.Trim() } else { "0" }
-                            
-                            # Нормировка записи пути, т.к. в ini-файле UNIX стиль, а у нас форточки
-                            $path_norm   = $path -replace '/', '\'
-                            $target_norm = $_path -replace '/', '\'
+                    foreach ($section in $allSections) {
+                        # Ищем любую секцию, которая называется [Profile0], [Profile1] и т.д.
+                        # \d+ означает "одна или более цифр"
+                        if ($section -match '^\[Profile\d+\]') {
+                            # Ищем Path и IsRelative в текущей секции (не забываем про \r?)
+                            $pathMatch = [regex]::Match($section, '(?m)^Path=(.+)\r?$')
+                            $relMatch  = [regex]::Match($section, '(?m)^IsRelative=(.+)\r?$')
 
-                            if ($path_norm -eq $target_norm -and $rel -eq "1") {
-                                $found = $true
-                                $default_profile = $path
-                                break
-                            }
-                        }
-                    }
-                    
-                    # Если не нашли через секции, проверяем последнюю секцию (аналог END в awk)
-                    if (-not $found) {
-                        # Ищем последнюю секцию Profile
-                        $lastSection = ($profileSections[-1])
-                        if ($lastSection -match '^\[Profile[^\]]*\]') {
-                            $pathMatch = [regex]::Match($lastSection, '(?m)^Path=(.+)$')
-                            $relMatch = [regex]::Match($lastSection, '(?m)^IsRelative=(.+)$')
-                            $path = if ($pathMatch.Success) { $pathMatch.Groups[1].Value.Trim() } else { "" }
-                            $rel = if ($relMatch.Success) { $relMatch.Groups[1].Value.Trim() } else { "0" }
-                            
-                            $path_norm   = $path -replace '/', '\'
-                            $target_norm = $_path -replace '/', '\'
+                            if ($pathMatch.Success) {
+                                $_path_path = $pathMatch.Groups[1].Value.Trim()
+                                
+                                # Если IsRelative найден - берем его значение, иначе считаем, что он 0
+                                $rel = if ($relMatch.Success) { $relMatch.Groups[1].Value.Trim() } else { "0" }
 
-                            if ($path_norm -eq $target_norm -and $rel -eq "1") {
-                                $default_profile = $path
+                                if ($_path_path -eq $_path_def -and $rel -eq "1") {
+                                    $found = $true
+                                    $default_profile = $_path_path
+                                    break
+                                    }
                             }
                         }
                     }
                 }
-
+                # Если строка не пустая или не null
                 if (-not [string]::IsNullOrEmpty($default_profile)) {
+                    # Цепляем в базовой части пути и нормализуем путь профиля, т.к. в ini-файле UNIX стиль, а у нас форточки
                     $default_profile = Join-Path $base ($default_profile -replace '/', '\')
                 }
             }
@@ -1329,7 +1298,7 @@ function mode_single_core {
 
     # 1. Заменяем опасные символы файловой системы на подчеркивания
     # 2. Удаляем апострофы
-    # 3. Удаляем эмодзи и прочие нестандартные символы, оставляя только буквы (кириллица/латиница), цифры, пробелы, дефисы и точки, !, ?
+    # 3. Удаляем эмодзи и прочие нестандартные символы, оставляя только буквы (кириллица/латиница), цифры, пробелы, дефисы и точки, !)
     # 4. Сжимаем множественные пробелы/подчеркивания в один
     # 5. Сжатие подряд идущих _
     # 6. Обрезаем строку до 200 символов, корректно с UTF-8
@@ -1355,7 +1324,23 @@ function mode_single_core {
     $script:FILENAME = $script:FILENAME -replace '[_ ]+$', ''
 
     $script:PROJECT_DIR = "$WORKDIR\$CHANNEL\${UPLOAD_DATE}_${FILENAME}_temp"
-    New-Item -ItemType Directory -Path $script:PROJECT_DIR -Force | Out-Null
+    
+    try {
+    # -ErrorAction Stop превращает обычную ошибку в исключение, которое ловит catch
+    New-Item -ItemType Directory -Path $script:PROJECT_DIR -Force -ErrorAction Stop | Out-Null
+    }
+    catch [System.UnauthorizedAccessException] {
+        # Перехватываем конкретную ошибку доступа
+        Write-Host ""
+        error 6 "Access to '$WORKDIR' is denied"
+        error 6 "Run Terminal as Administrator or change the Working Directory"
+
+        Write-Host ""
+        info_color 6 "Press Enter to close this window..." $CYAN
+        Read-Host 
+        exit 1
+    }
+
     $result_meta | Out-File -FilePath "$script:PROJECT_DIR\info.txt" -Encoding utf8
 
     # Формат:
@@ -1662,7 +1647,7 @@ function mode_single_core {
 
         $NEW_PROJECT_DIR = $script:PROJECT_DIR -replace '_temp$', ''
 
-        # Копирование через Robocopy (Windows) или rsync (Linux/Mac)
+        # Копирование через Robocopy
         robocopy $script:PROJECT_DIR $NEW_PROJECT_DIR /E > $null
         Remove-Item -Path $script:PROJECT_DIR -Recurse -Force
 
