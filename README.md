@@ -257,6 +257,5 @@
 ### Пакетный режим: прогресс загрузки
 ![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_09.png)
 
----
 
 
