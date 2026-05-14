@@ -7,7 +7,7 @@ touch ~/.hushlogin
 # Название и версия ПО
 # =========================
 
-ABOUT="451saver v3.6.1"
+ABOUT="451saver v3.6.2"
 
 # Меняем заголовок окна
 echo -ne "\033]0;$ABOUT\007"
@@ -317,14 +317,32 @@ get_youtube_id()
 get_clean_string() {
     local input="$1"
     # Удаление апострофов
-    # Удаление эмодзи и нестандартных символов (оставляем буквы, цифры, пробелы, ., -, _, !?)
+    # Удаление эмодзи и нестандартных символов (оставляем буквы, цифры, пробелы, .,-_!?[])
     # Убираем подчеркивания и пробелы по краям
     # Сжатие множественных подчеркиваний
     echo "$input" | \
         sed "s/'//g" | \
-        perl -CSDA -pe 's/[^\p{L}\p{N} .\-_!?]//g' | \
+        perl -CSDA -pe 's/[^\p{L}\p{N} .\-_!?,\[\]]//g' | \
         sed -E 's/ +/ /g; s/^[_ ]+//; s/[_ ]+$//' | \
         sed -E 's/_+/_/g'
+}
+
+# Проверка прав на запись в каталог
+check_access_dir() {
+    local dir="$1"
+
+    if mkdir -p "$dir" 2>/dev/null; then
+        return 0
+    else
+        error 6 "Access to ${dir} is denied"
+        error 6 "Run Terminal with Root or change the Working Directory"
+        echo ""
+        info_color 6 "Press Enter to close this window..." $CYAN
+        # </dev/tty нужен, так как stdin уже занят или перенаправлен и read -r читает не клавиатуру,
+        # а уже «пустой» поток ввода, поэтому делаем чтение напрямую из терминала
+        read -r </dev/tty
+        return 1
+    fi
 }
 
 # Ищем и переименовываем только что скачанный MKV файл
@@ -1304,7 +1322,7 @@ main_menu()
       info_color 6 ""
       info_color 6 "Good bye..." "$GREEN"
       echo ""
-      info_color 6 "Press Enter to exit" "$CYAN"
+      info_color 6 "Press Enter to close this window..." "$CYAN"
       # Скрыть курсор
       printf "\033[?25l"
       read -r
@@ -1418,7 +1436,8 @@ mode_single_core()
   )
 
   PROJECT_DIR="${WORKDIR}/${CHANNEL}/${UPLOAD_DATE}_${FILENAME}_temp"
-  mkdir -p "${PROJECT_DIR}"
+  # Создаём каталог, проверяя права доступа
+  check_access_dir "${PROJECT_DIR}" || exit 1
   echo "$result_meta" > "${PROJECT_DIR}/info.txt"
 
   allowed_languages_ai=("en" "en-US" "en-GB" "en-CA" "en-AU" "de" "fr" "es" "it" "ja" "ko" "zh" "zh-CN" "zh-TW" "lt" "lv" "ar")
@@ -2055,7 +2074,8 @@ mode_batch_common()
     fi
 
     # Если рабочая директория по каким-либо причинам отсутствует
-    mkdir -p "${WORKDIR}"
+    # Создаём каталог, проверяя права доступа
+    check_access_dir "${WORKDIR}"
 
     datetime=$(date '+%Y_%m_%d_%H-%M-%S')
 
@@ -2375,7 +2395,8 @@ check_voice_core()
   )
 
   PROJECT_DIR="${WORKDIR}/${CHANNEL}_CHECK_VOICE/${UPLOAD_DATE}_${FILENAME}_CHECK_VOICE"
-  mkdir -p "${PROJECT_DIR}"
+  # Создаём каталог, проверяя права доступа
+  check_access_dir "${PROJECT_DIR}" || exit 1
 
   ai_ru_pause=false
   allowed_languages_ai=("en" "en-US" "en-GB" "en-CA" "en-AU" "de" "fr" "es" "it" "ja" "zh" "zh-CN" "zh-TW" "ar")
@@ -2431,7 +2452,7 @@ if [[ $failed -ne 0 ]]; then
   echo ""
   error 3 "Required files are missing!"
   echo ""
-  info_color 3 "Press Enter to exit" "$CYAN"
+  info_color 3 "Press Enter to close this window..." "$CYAN"
   # Скрыть курсор
   printf "\033[?25l"
   read -r
