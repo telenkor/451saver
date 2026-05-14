@@ -18,7 +18,7 @@ Clear-Host
 # Название и версия ПО
 # =========================
 
-$ABOUT = "451saver v3.6.1"
+$ABOUT = "451saver v3.6.2"
 
 # Меняем заголовок окна
 $Host.UI.RawUI.WindowTitle = $ABOUT
@@ -337,17 +337,56 @@ function get_clean_string {
         [string]$RawTitle
     )
     # Удаление апострофов
-    # Удаление эмодзи и нестандартных символов (оставляем буквы, цифры, пробелы, ., -, _, !?)
+    # Удаление эмодзи и нестандартных символов (оставляем буквы, цифры, пробелы, .,-_!?[])
     # Убираем подчеркивания и пробелы по краям
     # Сжатие множественных подчеркиваний
     $Clean = $RawTitle `
         -replace "'", "" `
-        -replace '[^\p{L}\p{N} .\-_!?]', "" `
+        -replace '[^\p{L}\p{N} .\-_!?,\[\]]', "" `
         -replace '\s+', " " `
         -replace '^[_ ]+', '' `
         -replace '[_ ]+$', '' `
         -replace '_+', '_'
     return $Clean
+}
+
+# Проверка прав на запись в каталог
+function check_access_dir {
+    param (
+        [Parameter(Mandatory=$true, HelpMessage="Specify the path to the directory being created")]
+        [string]$Path
+    )
+
+    # 1. Сначала убедимся, что сама директория существует
+    if (-not (Test-Path -Path $Path)) {
+        try {
+            New-Item -ItemType Directory -Path $Path -Force -ErrorAction Stop | Out-Null
+        } catch {
+            # Если не смогли даже создать диреткорию
+            handle_access_error $Path
+        }
+    }
+
+    # 2. Проверка прав: пробуем создать временный файл
+    $testFile = Join-Path $Path "access_test_$(Get-Random).tmp"
+    try {
+        $temp = New-Item -ItemType File -Path $testFile -Force -ErrorAction Stop
+        Remove-Item -Path $testFile -ErrorAction SilentlyContinue | Out-Null
+    }
+    catch {
+        # Если директория есть, но писать в неё нельзя
+        handle_access_error $Path
+    }
+}
+
+function handle_access_error {
+    param($Path)
+    error 6 "Access to '$Path' is denied"
+    error 6 "Run Terminal as Administrator or change the Working Directory"
+    Write-Host ""
+    info_color 6 "Press Enter to close this window..." $CYAN
+    Read-Host 
+    exit 1
 }
 
 # Ищем и переименовываем только что скачанный MKV файл
@@ -1356,7 +1395,7 @@ function main_menu {
                 Write-Host ""
                 info_color 6 "Good bye..." $GREEN
                 Write-Host ""
-                info_color 6 "Press Enter to exit" "$CYAN"
+                info_color 6 "Press Enter to close this window..." "$CYAN"
                 # Скрыть курсор
                 Write-Host -NoNewline "`e[?25l"
                 Read-Host
@@ -1470,21 +1509,7 @@ function mode_single_core {
 
     $script:PROJECT_DIR = "$WORKDIR\$CHANNEL\${UPLOAD_DATE}_${FILENAME}_temp"
     
-    try {
-        # -ErrorAction Stop превращает обычную ошибку в исключение, которое ловит catch
-        New-Item -ItemType Directory -Path $script:PROJECT_DIR -Force -ErrorAction Stop | Out-Null
-    }
-    catch [System.UnauthorizedAccessException] {
-        # Перехватываем конкретную ошибку доступа
-        Write-Host ""
-        error 6 "Access to '$WORKDIR' is denied"
-        error 6 "Run Terminal as Administrator or change the Working Directory"
-
-        Write-Host ""
-        info_color 6 "Press Enter to close this window..." $CYAN
-        Read-Host 
-        exit 1
-    }
+    check_access_dir -Path $script:PROJECT_DIR
 
     $result_meta | Out-File -LiteralPath "$script:PROJECT_DIR\info.txt" -Encoding utf8
 
@@ -2050,7 +2075,7 @@ function mode_batch_common {
         }
 
         # Если рабочая директория по каким-либо причинам отсутствует
-        New-Item -ItemType Directory -Path $global:WORKDIR -Force | Out-Null
+        check_access_dir -Path $global:WORKDIR
 
         $datetime = Get-Date -Format "yyyy_MM_dd_HH-mm-ss"
 
@@ -2401,7 +2426,8 @@ function check_voice_core {
     }
 
     $script:PROJECT_DIR = "$global:WORKDIR\${CHANNEL}_CHECK_VOICE\${UPLOAD_DATE}_${FILENAME}_CHECK_VOICE"
-    New-Item -ItemType Directory -Path $script:PROJECT_DIR -Force | Out-Null
+
+    check_access_dir -Path $script:PROJECT_DIR
 
     $script:ai_ru_pause = $false
     $allowed_languages_ai = @("en", "en-US", "en-GB", "en-CA", "en-AU", "de", "fr", "es", "it", "ja", "zh", "zh-CN", "zh-TW", "ar")
@@ -2494,7 +2520,7 @@ if ($failed -ne 0) {
     Write-Host ""
     error 3 "Required files are missing!"
     Write-Host ""
-    info_color 3 "Press Enter to exit" "$CYAN"
+    info_color 3 "Press Enter to close this window..." "$CYAN"
     # Скрыть курсор
     Write-Host -NoNewline "`e[?25l"
     Read-Host
