@@ -18,7 +18,7 @@ Clear-Host
 # Название и версия ПО
 # =========================
 
-$ABOUT = "451saver v3.5.1"
+$ABOUT = "451saver v3.6.1"
 
 # Меняем заголовок окна
 $Host.UI.RawUI.WindowTitle = $ABOUT
@@ -28,10 +28,10 @@ $Host.UI.RawUI.WindowTitle = $ABOUT
 # =========================
 
 $NORMAL = "`e[0m"
-$RED    = "`e[91m"
-$GREEN  = "`e[32m"
-$CYAN   = "`e[36m"
-$GRAY   = "`e[90m"
+$RED = "`e[91m"
+$GREEN = "`e[32m"
+$CYAN = "`e[36m"
+$GRAY = "`e[90m"
 
 # =========================
 # Пути к файлам системные
@@ -58,7 +58,7 @@ function logo {
     Write-Host "$($GRAY)█    ██╔╝██║██╔════╝ ████║  ██╔════╝██╔══██╗██║   ██║██╔════╝██╔══██╗   █$($NORMAL)"
     Write-Host "$($GRAY)█   ██╔╝ ██║██████╗ ██╔██║  ╚█████╗ ███████║╚██╗ ██╔╝█████╗  ██████╔╝   █$($NORMAL)"
     Write-Host "$($GRAY)█   ███████║╚════██╗╚═╝██║   ╚═══██╗██╔══██║ ╚████╔╝ ██╔══╝  ██╔══██╗   █$($NORMAL)"
-     Write-Host "$($GRAY)█   ╚════██║██████╔╝███████╗██████╔╝██║  ██║  ╚██╔╝  ███████╗██║  ██║   █$($NORMAL)"
+    Write-Host "$($GRAY)█   ╚════██║██████╔╝███████╗██████╔╝██║  ██║  ╚██╔╝  ███████╗██║  ██║   █$($NORMAL)"
     Write-Host "$($GRAY)█        ╚═╝╚═════╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝   █$($NORMAL)"
     Write-Host "$($GRAY)███ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ ███$($NORMAL)"
     Write-Host "$($GRAY)█▀$($NORMAL)                        $($GRAY)-  $ABOUT  -$($NORMAL)                        $($GRAY)▀█$($NORMAL)"
@@ -77,87 +77,87 @@ function leading_spaces {
 
 function info_check {
     param($1, $2)
-    $MSG = $2
-    if ([string]::IsNullOrEmpty($MSG)) {
+    $msg = $2
+    if ([string]::IsNullOrEmpty($msg)) {
         Write-Host "`n"
         return
     }
     leading_spaces $1
-    Write-Host "[${GREEN}v${NORMAL}] $MSG"
+    Write-Host "[${GREEN}v${NORMAL}] $msg"
 }
 
 function info_uncheck {
     param($1, $2)
-    $MSG = $2
-    if ([string]::IsNullOrEmpty($MSG)) {
+    $msg = $2
+    if ([string]::IsNullOrEmpty($msg)) {
         Write-Host "`n"
         return
     }
     leading_spaces $1
-    Write-Host "[${RED}x${NORMAL}] $MSG"
+    Write-Host "[${RED}x${NORMAL}] $msg"
 }
 
 function info_color {
     param($1, $2, $3)
-    $MSG = $2
-    $MSG1 = $3
-    if ([string]::IsNullOrEmpty($MSG) -and [string]::IsNullOrEmpty($MSG1)) {
+    $msg = $2
+    $msg_1 = $3
+    if ([string]::IsNullOrEmpty($msg) -and [string]::IsNullOrEmpty($msg_1)) {
         Write-Host "`n"
         return
     }
     # Если цвет не передан — используем NORMAL
-    if ([string]::IsNullOrEmpty($MSG1)) { $MSG1 = $NORMAL }
+    if ([string]::IsNullOrEmpty($msg_1)) { $msg_1 = $NORMAL }
 
     leading_spaces $1
-    Write-Host -NoNewline "${MSG1}${MSG}${NORMAL}`n"
+    Write-Host -NoNewline "${msg_1}${msg}${NORMAL}`n"
 }
 
 function info_color_bi {
     param($1, $2, $3, $4, $5, $6, $7)
-    $MSG = $2
-    $MSG1 = $3
-    $MSG2 = $4
-    $MSG3 = $5
-    $MSG4 = $6
-    $MSG5 = $7
-    if ([string]::IsNullOrEmpty($MSG) -and [string]::IsNullOrEmpty($MSG1) -and [string]::IsNullOrEmpty($MSG2) -and [string]::IsNullOrEmpty($MSG3) -and [string]::IsNullOrEmpty($MSG4) -and [string]::IsNullOrEmpty($MSG5)) {
+    $msg = $2
+    $msg_1 = $3
+    $msg_2 = $4
+    $msg_3 = $5
+    $msg_4 = $6
+    $msg_5 = $7
+    if ([string]::IsNullOrEmpty($msg) -and [string]::IsNullOrEmpty($msg_1) -and [string]::IsNullOrEmpty($msg_2) -and [string]::IsNullOrEmpty($msg_3) -and [string]::IsNullOrEmpty($msg_4) -and [string]::IsNullOrEmpty($msg_5)) {
         Write-Host "`n"
         return
     }
     # Если цвет не передан — используем NORMAL
-    if ([string]::IsNullOrEmpty($MSG1)) { $MSG1 = $NORMAL }
-    if ([string]::IsNullOrEmpty($MSG3)) { $MSG3 = $NORMAL }
-    if ([string]::IsNullOrEmpty($MSG5)) { $MSG5 = $NORMAL }
+    if ([string]::IsNullOrEmpty($msg_1)) { $msg_1 = $NORMAL }
+    if ([string]::IsNullOrEmpty($msg_3)) { $msg_3 = $NORMAL }
+    if ([string]::IsNullOrEmpty($msg_5)) { $msg_5 = $NORMAL }
 
     leading_spaces $1
-    Write-Host -NoNewline "${MSG1}${MSG}${NORMAL}"
-    Write-Host -NoNewline "${MSG3}${MSG2}${NORMAL}"
-    Write-Host "${MSG5}${MSG4}${NORMAL}"
+    Write-Host -NoNewline "${msg_1}${msg}${NORMAL}"
+    Write-Host -NoNewline "${msg_3}${msg_2}${NORMAL}"
+    Write-Host "${msg_5}${msg_4}${NORMAL}"
 }
 
 function info_triple {
     param($1, $2, $3, $4)
-    $MSG1 = $2
-    $MSG2 = $3
-    $MSG3 = $4
+    $msg_1 = $2
+    $msg_2 = $3
+    $msg_3 = $4
 
-    if ([string]::IsNullOrEmpty($MSG1) -and [string]::IsNullOrEmpty($MSG2) -and [string]::IsNullOrEmpty($MSG3)) {
+    if ([string]::IsNullOrEmpty($msg_1) -and [string]::IsNullOrEmpty($msg_2) -and [string]::IsNullOrEmpty($msg_3)) {
         Write-Host "`n"
         return
     }
     leading_spaces $1
-    Write-Host "[${GREEN}v${NORMAL}] ${MSG1}${GREEN}${MSG2}${NORMAL}${MSG3}"
+    Write-Host "[${GREEN}v${NORMAL}] ${msg_1}${GREEN}${msg_2}${NORMAL}${msg_3}"
 }
 
 function error {
     param($1, $2)
-    $MSG = $2
-    if ([string]::IsNullOrEmpty($MSG)) {
+    $msg = $2
+    if ([string]::IsNullOrEmpty($msg)) {
         Write-Host "`n"
         return
     }
     leading_spaces $1
-    Write-Host "${STRONG}${RED}[x ERROR] ${MSG}${NORMAL}"
+    Write-Host "${RED}[x ERROR] ${msg}${NORMAL}"
 }
 
 function press_enter {
@@ -246,26 +246,30 @@ function duration {
     # Защита от пустого/битого вывода
     if ([string]::IsNullOrWhiteSpace($raw)) {
         $global:DURATION = 0
-    } else {
+    }
+    else {
         $global:DURATION = [double]$raw
     }
 
     $duration_seconds = [math]::Floor($global:DURATION)
 
-    $hours   = [math]::Floor($duration_seconds / 3600)
+    $hours = [math]::Floor($duration_seconds / 3600)
     $minutes = [math]::Floor(($duration_seconds % 3600) / 60)
     $seconds = $duration_seconds % 60
 
     # Форматируем уже безопасные int
     $global:DURATION_FORMATTED =
-        ("{0:00}:{1:00}:{2:00}.000" -f `
+    ("{0:00}:{1:00}:{2:00}.000" -f `
         [int]$hours, [int]$minutes, [int]$seconds)
 }
 
 # Функция для очистки пути от экранирования
 function clean_path {
     param($1)
-    $input_path = $1
+    # 1. Убираем амперсанд в начале (если он есть)
+    # 2. Убираем лишние кавычки по краям
+    # 3. Убираем лишние пробелы
+    $input_path = $1.Trim().TrimStart('&').Trim().Trim("'").Trim('"')
 
     # Удаляем кавычки, если они есть
     $input_path = $input_path -replace '^"', ''
@@ -294,20 +298,25 @@ function clear_lines {
 
 # Функция возвращает ID видеоролика
 function get_youtube_id {
+    # 1. ссылка с ?v= (классическая)
+    # 2. ссылка youtu.be/ID (короткая)
+    # 3. ссылка /shorts/ID (шортсы)
+    # 4. проверка, что остался корректный ID из 11 символов
     param($1)
     
     $id = $null
-    $input_url = $1
+    # Используем .Trim(), чтобы убрать пробелы по краям
+    $input_url = if ($null -ne $1) { $1.Trim() } else { $null }
     
-    # Проверка: youtu.be/ID
-    if ($input_url -match 'youtu\.be/([a-zA-Z0-9_-]{11})') {
+    if ($input_url -match '[?&]v=([a-zA-Z0-9_-]{11})') {
         $id = $matches[1]
     }
-    # Проверка: ?v=ID или &v=ID в URL
-    elseif ($input_url -match '[?&]v=([a-zA-Z0-9_-]{11})') {
+    elseif ($input_url -match 'youtu\.be/([a-zA-Z0-9_-]{11})') {
         $id = $matches[1]
     }
-    # Проверка: просто 11-символьный ID
+    elseif ($input_url -match 'shorts/([a-zA-Z0-9_-]{11})') {
+        $id = $matches[1]
+    }
     elseif ($input_url -match '^[a-zA-Z0-9_-]{11}$') {
         $id = $input_url
     }
@@ -319,6 +328,44 @@ function get_youtube_id {
     info_triple 6 "URL/ID accepted: " "$id" "" 2>&1 | Out-Null
     Write-Output $id
     return
+}
+
+# Очищаем строку от апострофов, эмодзи и лишних пробелов
+function get_clean_string {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$RawTitle
+    )
+    # Удаление апострофов
+    # Удаление эмодзи и нестандартных символов (оставляем буквы, цифры, пробелы, ., -, _, !?)
+    # Убираем подчеркивания и пробелы по краям
+    # Сжатие множественных подчеркиваний
+    $Clean = $RawTitle `
+        -replace "'", "" `
+        -replace '[^\p{L}\p{N} .\-_!?]', "" `
+        -replace '\s+', " " `
+        -replace '^[_ ]+', '' `
+        -replace '[_ ]+$', '' `
+        -replace '_+', '_'
+    return $Clean
+}
+
+# Ищем и переименовываем только что скачанный MKV файл
+function search_rename_mkv {
+    $MKV_FILE = Get-ChildItem -LiteralPath "$script:PROJECT_DIR" -File | Where-Object { $_.Extension -eq ".mkv" }
+    if ($null -ne $MKV_FILE -and $MKV_FILE.Count -gt 0) {
+        info_check 6 "Video saved"
+
+        $src = $MKV_FILE[0].FullName
+        $dir = Split-Path $src
+        $dst = Join-Path $dir "${script:FILENAME}.mkv"
+        Remove-Item $dst -Force -ErrorAction SilentlyContinue
+        Rename-Item -Path $src -NewName "${script:FILENAME}.mkv"
+        return $true
+    }
+    else {
+        return $false
+    }
 }
 
 # Проверка зависимостей
@@ -340,7 +387,7 @@ function check_file {
 # =========================
 
 # Скачивание субтитров на нескольких языках
-function download_multilang_subs {
+function download_subs {
     param($1, $2, $3)
     $video_url = $1
     $output_dir = $2
@@ -349,7 +396,7 @@ function download_multilang_subs {
     foreach ($lang in $subs_lang) {
         # Защита от бесполезного выполнения, если на итерации произошла ошибка
         if ($status -eq $false) {
-            return $false
+            return
         }
         & $NODE_EXE $VOT_CLI_JS `
             --subs-srt `
@@ -358,34 +405,93 @@ function download_multilang_subs {
             --output-file="${base_name}.${lang}.srt" `
             $video_url 2>$null >$null
 
-        if (Test-Path -Path "${output_dir}/${base_name}.${lang}.srt" -PathType Leaf) {
+        if (Test-Path -LiteralPath "${output_dir}/${base_name}.${lang}.srt" -PathType Leaf) {
             info_triple 6 "Subtitles " "$($lang.ToUpper())" " saved"
-        } else {
-            $lang_upper = $lang.ToUpper()
-            $msg = "Subtitles $lang_upper not downloaded"
-            error 6 "$msg"
-            $global:current_ERROR = $msg
-            $global:status = "false"
+        }
+        else {
+            if (($mode_id -eq "single") -or ($ai_ru_pause -eq $true)) {
+                :subtitleLoop while ($true) {
+                    # Сохранить позицию курсора (эмуляция через переменную)
+                    $cursorPos = [Console]::GetCursorPosition()
+                
+                    Write-Host ""
+                    info_color_bi 6 "Subtitles " "" "$($lang.ToUpper())" "$RED" " not downloaded" ""
+                    info_color 6 "You can try downloading it manually using the VOICE-OVER-TRANSLATION browser extension."
+                    info_color 6 "Do not select `"y`" until the .srt file is placed to the WORKING DIRECTORY."
+                    Write-Host ""
+                
+                    Write-Host -NoNewline "`e[?25h"
+                    info_color_bi 9 ".srt file is ready? [" "$CYAN" "y/n" "$RED" "]:" "$CYAN"
+                    # Показать курсор
+                    Write-Host -NoNewline "`e[?25h"
+                    Write-Host -NoNewline "`e[9C"
+                    $ans = Read-Host
+
+                    $result = 1 # по умолчанию ошибка
+
+                    switch ($ans) {
+                        "y" {
+                            $SRT_FILE = Get-ChildItem -LiteralPath "$WORKDIR" -File | Where-Object { $_.Extension -eq ".srt" }
+                            # Проверяем, что переменная не пуста (существует хотя бы один файл)
+                            if ($null -ne $SRT_FILE -and $SRT_FILE.Count -gt 0) {
+                                Move-Item -Path $SRT_FILE[0].FullName -Destination "${PROJECT_DIR}/${FILENAME}.${lang}.srt"
+                                $result = 0
+                                clear_lines 7
+                                info_triple 6 "Subtitles " "$($lang.ToUpper())" " saved"
+                                break subtitleLoop
+                            }
+                            else {
+                                # Скрыть курсор
+                                Write-Host -NoNewline "`e[?25l"
+                                Write-Host ""
+                                error 9 ".srt file not found in WORKING DIRECTORY, new try..."
+                                Start-Sleep -Seconds 8
+                                # Очистка перед повтором (эмуляция)
+                                clear_lines 9
+                            }
+                        }
+                        "n" {
+                            clear_lines 7
+                        
+                            $global:status = $false
+                            $msg = "Subtitles $($lang.ToUpper()) not downloaded"
+                            error 6 "$msg"
+                            $global:current_ERROR = $msg
+                        
+                            $result = 1
+                            break subtitleLoop
+                        }
+                        default {
+                            Write-Host ""
+                            error 9 "Invalid input, type [y/n]:"
+                            error 9 "Press Enter to repeat..."
+                            # Скрыть курсор
+                            Write-Host -NoNewline "`e[?25l"
+                            Read-Host
+                            clear_lines 12
+                        }
+                    }
+                }
+            
+                # Скрыть курсор
+                Write-Host -NoNewline "`e[?25l"
+            
+            }
+            elseif ($ai_ru_pause -eq $false) {
+                $global:status = $false
+                $msg = "Subtitles $($lang.ToUpper()) not downloaded"
+                error 6 "$msg"
+                $global:current_ERROR = $msg
+            }
         }
     }
 }
 
 # Загрузка ИИ субтитров и голосового перевода
-function voice_sub {
-    # Условия выполнения задаются при вызове всей функции
-    $global:subs_lang = @("ru", "en")
+function download_voice {
+
     $voice_lang = "ru"
 
-    download_multilang_subs "https://www.youtube.com/watch?v=${YT_VIDEO_ID}" `
-        "${PROJECT_DIR}" `
-        "${FILENAME}" `
-        $subs_lang
-
-    # Защита от бесполезного выполнения, если на итерации произошла ошибка
-    if ($global:status -eq $false) {
-        return $false
-    }
-    
     # Выводим начальный текст
     $spaces = " " * 9
     Write-Host "$spaces Voice downloading  " -NoNewline
@@ -422,16 +528,17 @@ function voice_sub {
     Write-Host (" " * 50) -NoNewline
     [System.Console]::SetCursorPosition(0, $currentCursorTop)
 
-    if (Test-Path -Path "${PROJECT_DIR}/${FILENAME}.mp3" -PathType Leaf) {
+    if (Test-Path -LiteralPath "${PROJECT_DIR}/${FILENAME}.mp3" -PathType Leaf) {
         info_triple 6 "Voice " "RU" " saved"
-    } else {
-        if (($mode_id -eq "single") -or ($ai_ru_pause -eq "true")) {
-            while ($true) {
+    }
+    else {
+        if (($mode_id -eq "single") -or ($ai_ru_pause -eq $true)) {
+            :voiceLoop while ($true) {
                 # Сохранить позицию курсора (эмуляция через переменную)
                 $cursorPos = [Console]::GetCursorPosition()
                 
                 Write-Host ""
-                info_color 6 "Voice RU not downloaded."
+                info_color_bi 6 "Voice " "" "RU" "$RED" " not downloaded" ""
                 info_color 6 "You can try downloading it manually using the VOICE-OVER-TRANSLATION browser extension."
                 info_color 6 "Do not select `"y`" until the .mp3 file is placed to the WORKING DIRECTORY."
                 Write-Host ""
@@ -447,26 +554,27 @@ function voice_sub {
 
                 switch ($ans) {
                     "y" {
-                        $MP3_FILE = Get-ChildItem -Path "$WORKDIR" -Filter "*.mp3"
-                        if (Test-Path -Path $MP3_FILE[0].FullName -PathType Leaf) {
+                        $MP3_FILE = Get-ChildItem -LiteralPath "$WORKDIR" -File | Where-Object { $_.Extension -eq ".mp3" }
+                        # Проверяем, что переменная не пуста (существует хотя бы один файл)
+                        if ($null -ne $MP3_FILE -and $MP3_FILE.Count -gt 0) {
                             Move-Item -Path $MP3_FILE[0].FullName -Destination "${PROJECT_DIR}/${FILENAME}.mp3"
                             $result = 0
                             clear_lines 7
-                            break
-                        } else {
+                            info_triple 6 "Voice " "RU" " saved"
+                            break voiceLoop
+                        }
+                        else {
                             # Скрыть курсор
                             Write-Host -NoNewline "`e[?25l"
                             Write-Host ""
                             error 9 ".mp3 file not found in WORKING DIRECTORY, new try..."
                             Start-Sleep -Seconds 8
-                            # Очистка перед повтором (эмуляция)
-                            [Console]::SetCursorPosition($cursorPos.Left, $cursorPos.Top)
                             clear_lines 9
+                            break
                         }
-                        break
                     }
                     "n" {
-                        clear_lines 6
+                        clear_lines 7
                         
                         $global:status = $false
                         $msg = "Voice RU not downloaded"
@@ -474,29 +582,26 @@ function voice_sub {
                         $global:current_ERROR = $msg
                         
                         $result = 1
-                        break
+                        break voiceLoop
                     }
                     default {
                         Write-Host ""
-                        error 6 "Invalid input, type [y/n]:"
-                        error 6 "Press Enter to repeat..."
+                        error 9 "Invalid input, type [y/n]:"
+                        error 9 "Press Enter to repeat..."
                         # Скрыть курсор
                         Write-Host -NoNewline "`e[?25l"
-                        clear_lines 10
                         Read-Host
-                        break
+                        clear_lines 12
                     }
                 }
             }
             
             # Скрыть курсор
             Write-Host -NoNewline "`e[?25l"
-            # Восстановить позицию курсора
-            [Console]::SetCursorPosition($cursorPos.Left, $cursorPos.Top)
+            return
             
-            return $result
-            
-        } elseif ($ai_ru_pause -eq "false") {
+        }
+        elseif ($ai_ru_pause -eq $false) {
             $global:status = $false
             $msg = "Voice RU not downloaded"
             error 6 "$msg"
@@ -528,14 +633,14 @@ function init_config {
     return $true
 }
 
-# Стартовое меню: управление конфигурацией
+# Сохранение конфигурации в файл
 function save_config {
     $configContent = @"
 WORKDIR="$WORKDIR"
 BROWSER="$YT_BROWSER"
 PROFILE="$YT_PROFILE_PATH"
 "@
-    $configContent | Out-File -FilePath "$SCRIPT_DIR/config.txt" -Encoding utf8 -NoNewline
+    $configContent | Out-File -LiteralPath "$SCRIPT_DIR/config.txt" -Encoding utf8 -NoNewline
 }
 
 # Загрузка конфигурации
@@ -559,9 +664,10 @@ function load_config {
         $global:YT_PROFILE_PATH = $global:PROFILE
 
         if ($global:YT_BROWSER -eq "chrome") {
-            $global:_browser_ui_ = "Google Chrome"
-        } elseif ($global:YT_BROWSER -eq "firefox") {
-            $global:_browser_ui_ = "Mozilla Firefox"
+            $global:YT_BROWSER_UI = "Google Chrome"
+        }
+        elseif ($global:YT_BROWSER -eq "firefox") {
+            $global:YT_BROWSER_UI = "Mozilla Firefox"
         }
         return $true
     }
@@ -599,7 +705,7 @@ function detect_default_profile {
                     if ($section -match '^\[Install[^\]]*\]') {
                         # Добавляем \r? чтобы проглотить невидимый возврат каретки Windows
                         $defaultMatch = [regex]::Match($section, '(?m)^Default=(.+)\r?$')
-                        $lockedMatch  = [regex]::Match($section, '(?m)^Locked=1\r?$')
+                        $lockedMatch = [regex]::Match($section, '(?m)^Locked=1\r?$')
                         if ($defaultMatch.Success -and $lockedMatch.Success) {
                             $_path_def = $defaultMatch.Groups[1].Value.Trim()
                             break
@@ -618,7 +724,7 @@ function detect_default_profile {
                         if ($section -match '^\[Profile\d+\]') {
                             # Ищем Path и IsRelative в текущей секции (не забываем про \r?)
                             $pathMatch = [regex]::Match($section, '(?m)^Path=(.+)\r?$')
-                            $relMatch  = [regex]::Match($section, '(?m)^IsRelative=(.+)\r?$')
+                            $relMatch = [regex]::Match($section, '(?m)^IsRelative=(.+)\r?$')
 
                             if ($pathMatch.Success) {
                                 $_path_path = $pathMatch.Groups[1].Value.Trim()
@@ -630,7 +736,7 @@ function detect_default_profile {
                                     $found = $true
                                     $default_profile = $_path_path
                                     break
-                                    }
+                                }
                             }
                         }
                     }
@@ -712,12 +818,12 @@ function browser_select {
         switch ($browser_choice) {
             "1" {
                 $script:BROWSER = "firefox"
-                $script:_browser_ui_ = "Mozilla Firefox"
+                $script:YT_BROWSER_UI = "Mozilla Firefox"
                 break
             }
             "2" {
                 $script:BROWSER = "chrome"
-                $script:_browser_ui_ = "Google Chrome"
+                $script:YT_BROWSER_UI = "Google Chrome"
                 break
             }
             default {
@@ -779,7 +885,7 @@ function browser_select {
         # Поднимаемся на 2 строки вверх и стираем их
         clear_lines 2
 
-        error 6 "No profiles found for $_browser_ui_"
+        error 6 "No profiles found for $YT_BROWSER_UI"
         press_enter_repeat
         browser_select
         return
@@ -789,7 +895,8 @@ function browser_select {
     $DEFAULT_PROFILE = $null
     if ($script:BROWSER -match "^(chrome)$") {
         $DEFAULT_PROFILE = detect_default_profile $script:BROWSER $browser_dir
-    } else {
+    }
+    else {
         $DEFAULT_PROFILE = detect_default_profile $script:BROWSER $base
     }
 
@@ -814,7 +921,7 @@ function browser_select {
         Write-Host -NoNewline "`e[?25h"
 
         Write-Host ""
-        $browserName = $script:BROWSER.Substring(0,1).ToUpper() + $script:BROWSER.Substring(1)
+        $browserName = $script:BROWSER.Substring(0, 1).ToUpper() + $script:BROWSER.Substring(1)
         info_color 3 "SELECT PROFILE FOR: $browserName"
         Write-Host ""
 
@@ -822,7 +929,8 @@ function browser_select {
         foreach ($p in $valid_profiles) {
             if ($p -eq $DEFAULT_PROFILE) {
                 info_color 6 "$i. $p ← default" $GREEN
-            } else {
+            }
+            else {
                 info_color 6 "$i. $p"
             }
             $i++
@@ -875,6 +983,7 @@ function select_workdir {
 
         if ([string]::IsNullOrEmpty($script:WORKDIR)) {
             error 6 "Path cannot be empty"
+            error 6 "Press Enter to repeat..."
             Read-Host
             continue
         }
@@ -904,7 +1013,7 @@ function use_saved_config {
             info_color 3 "SAVED CONFIG FOUND"
             Write-Host ""
             info_color_bi 6 "Working directory: " "" "$WORKDIR" "$GRAY" "" ""
-            info_color_bi 6 "Browser: " "" "$_browser_ui_" "$GRAY" "" ""
+            info_color_bi 6 "Browser: " "" "$YT_BROWSER_UI" "$GRAY" "" ""
             info_color_bi 6 "Browser profile: " "" "$YT_PROFILE_PATH" "$GRAY" "" ""
             Write-Host ""
 
@@ -917,7 +1026,8 @@ function use_saved_config {
                 "n" { return $false }
                 default { invalid_input }
             }
-        } else {
+        }
+        else {
             return $false
         }
     }
@@ -1006,12 +1116,12 @@ function menu_pause_switch {
 
         render_status
 
-        info_color 6 "Yandex AI translation may be fails"
+        info_color 6 "Downloading from Yandex AI translation may fail"
         Write-Host ""
-        info_color 6 "You can pause the program if the .mp3 file has not been downloaded." $GRAY
-        info_color 6 "During this time, you can download the .mp3 file manually," $GRAY
+        info_color 6 "You can pause the program if the .mp3/.srt file has not been downloaded." $GRAY
+        info_color 6 "During this time, you can download these files manually," $GRAY
         info_color 6 "using the VOICE-OVER-TRANSLATION browser extension." $GRAY
-        info_color 6 "The .mp3 file should be placed in the WORKING DIRECTORY." $GRAY
+        info_color 6 "File must be placed in the WORKING DIRECTORY." $GRAY
         Write-Host ""
         info_color 6 "If you don't pause, the video with this issue will be skipped."
         Write-Host ""
@@ -1046,25 +1156,52 @@ function menu_trans_ai_switch {
 
         render_status
 
-        info_color 6 "Yandex AI translation into Russian"
+        info_color 6 "Yandex AI translation into Russian:"
+        Write-Host ""
+        info_color 6 "1. Voice + subtitles"
+        info_color 6 "2. Only voice"
+        info_color 6 "3. Only subtitles"
+        Write-Host "      4. ${RED}x${NORMAL} No translation"
+        info_color 6 "5. Quit to Main menu"
         Write-Host ""
 
         # Показать курсор
         Write-Host -NoNewline "`e[?25h"
 
-        info_color_bi 6 "Translate video? [" "$CYAN" "y/n" "$RED" "]:" "$CYAN"
+        info_color_bi 6 "Enter option number [" "$CYAN" "1-5" "$RED" "]:" "$CYAN"
         Write-Host -NoNewline "`e[6C"
-        $RU_TRANS_input = Read-Host
+        $choice = Read-Host
 
-        switch ($RU_TRANS_input) {
-            "y" { $script:RU_TRANS = "on"; break }
-            "Y" { $script:RU_TRANS = "on"; break }
-            "n" { $script:RU_TRANS = "off"; break }
-            "N" { $script:RU_TRANS = "off"; break }
-            default { invalid_input }
+        switch ($choice) {
+            "1" {
+                $script:RU_TRANS = "vo+sb"
+                break
+            }
+            "2" {
+                $script:RU_TRANS = "vo"
+                break
+            }
+            "3" {
+                $script:RU_TRANS = "sb"
+                break
+            }
+            "4" {
+                $script:RU_TRANS = "off"
+                break
+            }
+            "5" {
+                main_menu
+                return
+            }
+            default {
+                Write-Host ""
+                error 6 "Enter a number from 1 to 5"
+                press_enter_repeat
+            }
         }
         
-        if ($RU_TRANS_input -match "^[yYnN]$") {
+        # Выход из цикла только при выборе 1-5
+        if ($choice -match "^[1-5]$") {
             break
         }
     }
@@ -1078,7 +1215,7 @@ function menu_force_lng {
         render_status
 
         info_color 6 "Force language if N/A*:"
-        info_color 6 "Languages supported by Yandex Translator AI" $GRAY
+        info_color 6 "Languages supported by Yandex AI translator" $GRAY
         Write-Host ""
         info_color 6 "* Sometimes the language is not detected," $GRAY
         info_color 8 "in which case the translation won't load." $GRAY
@@ -1091,15 +1228,18 @@ function menu_force_lng {
         info_color 6 " 5. Spanish"
         info_color 6 " 6. Italian"
         info_color 6 " 7. Japanese"
-        info_color 6 " 8. Chinese"
-        info_color 6 " 9. Arabic"
-        info_color 6 "10. Quit to Main menu"
+        info_color 6 " 8. Korean"
+        info_color 6 " 9. Chinese"
+        info_color 6 "10. Lithuanian"
+        info_color 6 "11. Latvian"
+        info_color 6 "12. Arabic"
+        info_color 6 "13. Quit to Main menu"
         Write-Host ""
 
         # Показать курсор
         Write-Host -NoNewline "`e[?25h"
 
-        info_color_bi 6 "Enter option number [" "$CYAN" "1-10" "$RED" "]:" "$CYAN"
+        info_color_bi 6 "Enter option number [" "$CYAN" "1-13" "$RED" "]:" "$CYAN"
         Write-Host -NoNewline "`e[6C"
         $choice_lng = Read-Host
 
@@ -1132,21 +1272,35 @@ function menu_force_lng {
                 $script:FORCE_LNG = "ja"
                 break
             }
+
             "8" {
-                $script:FORCE_LNG = "zh-CN"
+                $script:FORCE_LNG = "ko"
                 break
             }
             "9" {
-                $script:FORCE_LNG = "ar"
+                $script:FORCE_LNG = "zh-CN"
                 break
             }
             "10" {
+                $script:FORCE_LNG = "lt"
+                break
+            }
+            "11" {
+                $script:FORCE_LNG = "lv"
+                break
+            }
+
+            "12" {
+                $script:FORCE_LNG = "ar"
+                break
+            }
+            "13" {
                 main_menu
                 return
             }
             default {
                 Write-Host ""
-                error 6 "Enter a number from 1 to 10"
+                error 6 "Enter a number from 1 to 13"
                 press_enter_repeat
             }
         }
@@ -1199,9 +1353,14 @@ function main_menu {
             }
             "6" {
                 logo
-                info_color 6 ""
+                Write-Host ""
                 info_color 6 "Good bye..." $GREEN
-                # printf "%12s" | tr ' ' '\n' - 12 пустых строк
+                Write-Host ""
+                info_color 6 "Press Enter to exit" "$CYAN"
+                # Скрыть курсор
+                Write-Host -NoNewline "`e[?25l"
+                Read-Host
+
                 1..12 | ForEach-Object { Write-Host "" }
                 exit 0
             }
@@ -1239,7 +1398,7 @@ function mode_single_core {
 
     # Сохраняем JSON во временный файл для jq (из-за ограничений PowerShell с <<<)
     $tempJsonFile = [System.IO.Path]::GetTempFileName()
-    $result_json | Out-File -FilePath $tempJsonFile -Encoding utf8 -NoNewline
+    $result_json | Out-File -LiteralPath $tempJsonFile -Encoding utf8 -NoNewline
 
     $result_meta = & $JQ_FILE -r @"
     {
@@ -1274,8 +1433,8 @@ function mode_single_core {
     $data_array = $raw_data -split "`t"
 
     $script:LANGUAGE = $data_array[0]
-    $script:CHANNEL = $data_array[1]
-    $script:TITLE = $data_array[2]
+    $script:CHANNEL = get_clean_string -RawTitle $data_array[1]
+    $script:TITLE = get_clean_string -RawTitle $data_array[2]
     $script:UPLOAD_DATE = $data_array[3]
     $script:RESOLUTIONS = $data_array[4]
 
@@ -1291,43 +1450,29 @@ function mode_single_core {
         error 6 "$msg"
         $global:current_ERROR = $msg
         return
-    } else {
+    }
+    else {
         info_triple 6 "Title: " "$script:TITLE" ""
         info_check 6 "Metadata saved"
     }
-
-    # 1. Заменяем опасные символы файловой системы на подчеркивания
-    # 2. Удаляем апострофы
-    # 3. Удаляем эмодзи и прочие нестандартные символы, оставляя только буквы (кириллица/латиница), цифры, пробелы, дефисы и точки, !)
-    # 4. Сжимаем множественные пробелы/подчеркивания в один
-    # 5. Сжатие подряд идущих _
-    # 6. Обрезаем строку до 200 символов, корректно с UTF-8
-    # 7. Убираем пробелы и _ по краям
     
     $script:FILENAME = $script:TITLE
     # Замена опасных символов
     $script:FILENAME = $script:FILENAME -replace '[/\\:*?"<>|]+', '_'
-    # Удаление апострофов
-    $script:FILENAME = $script:FILENAME -replace "'", ''
     # Удаление эмодзи и нестандартных символов (оставляем буквы, цифры, пробелы, ., -, _, !)
     $script:FILENAME = $script:FILENAME -replace '[^\p{L}\p{N}\ .\-_!]', ''
     # Пробелы в подчеркивания
     $script:FILENAME = $script:FILENAME -replace '[ ]+', '_'
-    # Сжатие множественных подчеркиваний
-    $script:FILENAME = $script:FILENAME -replace '_+', '_'
     # Обрезаем до 200 символов (по байтам UTF-8, сохраняя целые символы)
     if ($script:FILENAME.Length -gt 200) {
         $script:FILENAME = $script:FILENAME.Substring(0, 200)
     }
-    # Убираем подчеркивания и пробелы по краям
-    $script:FILENAME = $script:FILENAME -replace '^[_ ]+', ''
-    $script:FILENAME = $script:FILENAME -replace '[_ ]+$', ''
 
     $script:PROJECT_DIR = "$WORKDIR\$CHANNEL\${UPLOAD_DATE}_${FILENAME}_temp"
     
     try {
-    # -ErrorAction Stop превращает обычную ошибку в исключение, которое ловит catch
-    New-Item -ItemType Directory -Path $script:PROJECT_DIR -Force -ErrorAction Stop | Out-Null
+        # -ErrorAction Stop превращает обычную ошибку в исключение, которое ловит catch
+        New-Item -ItemType Directory -Path $script:PROJECT_DIR -Force -ErrorAction Stop | Out-Null
     }
     catch [System.UnauthorizedAccessException] {
         # Перехватываем конкретную ошибку доступа
@@ -1341,7 +1486,39 @@ function mode_single_core {
         exit 1
     }
 
-    $result_meta | Out-File -FilePath "$script:PROJECT_DIR\info.txt" -Encoding utf8
+    $result_meta | Out-File -LiteralPath "$script:PROJECT_DIR\info.txt" -Encoding utf8
+
+    $allowed_languages_ai = @("en", "en-US", "en-GB", "en-CA", "en-AU", "de", "fr", "es", "it", "ja", "ko", "zh", "zh-CN", "zh-TW", "lt", "lv", "ar")
+
+    if ($allowed_languages_ai -contains $script:LANGUAGE) {
+        if (($script:RU_TRANS -eq "vo+sb") -or ($script:RU_TRANS -eq "vo")) {
+            download_voice
+        }
+
+        if (($script:RU_TRANS -eq "vo+sb") -or ($script:RU_TRANS -eq "sb")) {
+            $global:subs_lang = @("ru", "en")
+            download_subs "https://www.youtube.com/watch?v=${YT_VIDEO_ID}" `
+                "${PROJECT_DIR}" `
+                "${FILENAME}" `
+                $subs_lang
+        }
+
+        $ru_trans_unsupport = $false
+
+        # Защита от бесполезного выполнения, если на итерации произошла ошибка
+        if ($global:status -eq $false) {
+            Write-Host ""
+            info_color 6 "Failed" $RED
+            return
+        }
+    }
+    elseif (($allowed_languages_ai -notcontains $script:LANGUAGE) -and ($script:RU_TRANS -ne "off")) {
+        info_uncheck 6 "Translation from $($script:LANGUAGE.ToUpper()) language into Russian is not supported"
+        # $ru_trans_unsupport: когда перевод активирован, но по языку видео он не поддерживается,
+        # в этом случае поток не должен попасть на большую обработку ffmpeg,
+        # но в то же время не должно изменяться значение $RU_TRANS
+        $ru_trans_unsupport = $true
+    }
 
     # Формат:
     # 1) avc1 (приоритет)
@@ -1352,11 +1529,12 @@ function mode_single_core {
         $resolutionsList = $script:RESOLUTIONS -split ' '
         $script:ACTUAL_HEIGHT = ($resolutionsList | ForEach-Object { [int]$_ } | Sort-Object | Select-Object -Last 1)
         info_triple 6 "Resolution: " "${ACTUAL_HEIGHT}p"
-    } else {
+    }
+    else {
         $height = [int]($global:USER_RESOLUTION -replace 'p$', '')
         $global:FORMAT = "bestvideo[vcodec^=avc1][height<=${height}]+bestaudio " +
-            "/bestvideo[height<=${height}]+bestaudio " +
-            "/best[height<=${height}]"
+        "/bestvideo[height<=${height}]+bestaudio " +
+        "/best[height<=${height}]"
 
         $script:ACTUAL_HEIGHT = $null
         $resolutionsList = $script:RESOLUTIONS -split ' ' | ForEach-Object { [int]$_ }
@@ -1364,55 +1542,93 @@ function mode_single_core {
         # Ищем точное совпадение или ближайшее меньшее
         if ($resolutionsList -contains $height) {
             $script:ACTUAL_HEIGHT = $height
-        } else {
+        }
+        else {
             $lower = $resolutionsList | Where-Object { $_ -lt $height } | Sort-Object | Select-Object -Last 1
             if ($lower) { $script:ACTUAL_HEIGHT = $lower }
         }
 
         if ($height -ne $script:ACTUAL_HEIGHT) {
-            info_uncheck 6 "Resolution ${global:USER_RESOLUTION} not available ➜ set ${ACTUAL_HEIGHT}p"
+            info_uncheck 6 "Resolution ${global:USER_RESOLUTION} not available → set ${ACTUAL_HEIGHT}p"
         }
     }
 
     # Получение видео
-    & $YT_DLP_FILE `
-        --ffmpeg-location "$FFMPEG_FILE" `
-        --cookies-from-browser "${YT_BROWSER}:${YT_PROFILE_PATH}" `
-        --js-runtimes "node:$NODE_EXE" `
-        --extractor-args "youtube:player_client=default" `
-        --force-ipv4 `
-        --quiet `
-        --progress `
-        --progress-template "          Media downloading%(progress._default_template)s" `
-        -f "$FORMAT" `
-        --merge-output-format mkv `
-        -o "$script:PROJECT_DIR/%(title)s.%(ext)s" `
-        -- $YT_VIDEO_ID 2>$null
+    # Разбиваем на блоки, чтобы отдельно выделить Формат
+    # Блок 1: Базовые опции
+    # Два пробела перед %(progress._default_template)s = сдвиг на 2 символа вправо и далее по аналогии
+    $yt_dlp_base = @(
+        "$YT_DLP_FILE"
+        "--ffmpeg-location", "$FFMPEG_FILE"
+        "--cookies-from-browser", "${YT_BROWSER}:${YT_PROFILE_PATH}"
+        "--js-runtimes", "node:$NODE_EXE"
+        "--extractor-args", "youtube:player_client=default"
+        "--force-ipv4"
+        "--quiet"
+        "--progress"
+        "--progress-template", "          Media downloading%(progress._default_template)s"
+    )
 
-    # Безопасное переименование видеофайла
-    $MKV_FILE = Get-ChildItem -Path "$script:PROJECT_DIR" -Filter "*.mkv" -ErrorAction SilentlyContinue
-    if ($MKV_FILE -and (Test-Path $MKV_FILE[0].FullName)) {
-        info_check 6 "Video saved"
+    # Блок 2: Опции формата
+    $yt_dlp_format = @(
+        "-f", "$FORMAT"
+    )
 
-        $src = $MKV_FILE[0].FullName
-        $dir = Split-Path $src
-        $dst = Join-Path $dir "${script:FILENAME}.mkv"
-        Remove-Item $dst -Force -ErrorAction SilentlyContinue
-        Rename-Item -Path $src -NewName "${script:FILENAME}.mkv"
-    } else {
-        $script:status = $false
-        $msg = "MKV file not found in: $script:PROJECT_DIR"
-        error 6 "$msg"
-        $global:current_ERROR = $msg
-        return $false
+    # Блок 3: Опции вывода и URL
+    $yt_dlp_output = @(
+        "--merge-output-format", "mkv"
+        "-o", "${PROJECT_DIR}/%(title)s.%(ext)s"
+        "--", "${YT_VIDEO_ID}"
+    )
+
+    # Создаём команду (объединяем массивы)
+    $yt_dlp_full = $yt_dlp_base + $yt_dlp_format + $yt_dlp_output
+
+    # Запускаем скачивание
+    # Символ '&' (call operator) используется для запуска строки или пути в переменной
+    & $yt_dlp_full[0] $yt_dlp_full[1..($yt_dlp_full.Length - 1)]
+
+    # Ищем полученный файл и пытаемся его переименовать
+    # В случае ошибки инициируем скачивание с другим Форматом
+    if (-not (search_rename_mkv)) {
+        # Очищаем строку с предупреждением (предполагается наличие функции clear_lines)
+        clear_lines 1
+
+        # Блок 2: Опции формата
+        if ($script:USER_RESOLUTION -eq "Best") {
+            $FORMAT = "bestvideo+bestaudio"
+        }
+        else {
+            # Аналог ${USER_RESOLUTION%p} — удаление буквы 'p' в конце строки
+            $FORMAT = "bestvideo[height<=$height]+bestaudio"
+        }
+
+        $yt_dlp_format = @("-f", "$FORMAT")
+
+        # Создаём команду
+        $yt_dlp_full = $yt_dlp_base + $yt_dlp_format + $yt_dlp_output
+
+        # Запускаем скачивание
+        # & — оператор вызова. Передаем имя файла и массив аргументов (начиная со второго элемента)
+        & $yt_dlp_full[0] $yt_dlp_full[1..($yt_dlp_full.Length - 1)]
+
+        # Если и в этот раз скачать не удалось
+        if (-not (search_rename_mkv)) {
+            $script:status = $false
+            $msg = "MKV file not found in: $script:PROJECT_DIR"
+            error 6 "$msg"
+            $global:current_ERROR = $msg
+            return
+        }
     }
 
     # Получение миниатюры
     curl -s -o "$script:PROJECT_DIR\thumbnail.jpg" "https://i.ytimg.com/vi/${YT_VIDEO_ID}/maxresdefault.jpg" 2>$null
 
-    if (Test-Path "$script:PROJECT_DIR\thumbnail.jpg") {
+    if (Test-Path -LiteralPath "$script:PROJECT_DIR\thumbnail.jpg" -PathType Leaf) {
         info_check 6 "Thumbnail saved"
-    } else {
+    }
+    else {
         $script:status = $false
         $msg = "Failed to get thumbnail"
         error 6 "$msg"
@@ -1420,12 +1636,12 @@ function mode_single_core {
         return $false
     }
 
-    # Getting duration of video
+    # Длительность видео
     duration "$script:PROJECT_DIR\${FILENAME}.mkv"
 
     # Получение глав
     $tempJsonFile2 = [System.IO.Path]::GetTempFileName()
-    $result_json | Out-File -FilePath $tempJsonFile2 -Encoding utf8 -NoNewline
+    $result_json | Out-File -LiteralPath $tempJsonFile2 -Encoding utf8 -NoNewline
 
     $CHAPTERS_RAW = & $JQ_FILE -r @'
     def pad: tostring | if length == 1 then "0" + . else . end;
@@ -1449,7 +1665,7 @@ function mode_single_core {
     $CHAPTERS_XML = "$script:PROJECT_DIR\temp_chapters.xml"
 
     if (-not [string]::IsNullOrEmpty($CHAPTERS_RAW)) {
-        $CHAPTERS_RAW | Out-File -FilePath "$script:PROJECT_DIR/chapters.txt" -Encoding utf8
+        $CHAPTERS_RAW | Out-File -LiteralPath "$script:PROJECT_DIR/chapters.txt" -Encoding utf8
         info_check 6 "Chapters saved"
 
         @'
@@ -1460,7 +1676,7 @@ function mode_single_core {
     <EditionUID>1</EditionUID>
     <EditionFlagHidden>0</EditionFlagHidden>
     <EditionFlagDefault>0</EditionFlagDefault>
-'@ | Out-File -FilePath $CHAPTERS_XML -Encoding utf8
+'@ | Out-File -LiteralPath $CHAPTERS_XML -Encoding utf8
 
         $prev_time = ""
         $prev_title = ""
@@ -1485,7 +1701,7 @@ function mode_single_core {
             <ChapterLanguage>eng</ChapterLanguage>
           </ChapterDisplay>
         </ChapterAtom>
-"@ | Out-File -FilePath $CHAPTERS_XML -Append -Encoding utf8
+"@ | Out-File -LiteralPath $CHAPTERS_XML -Append -Encoding utf8
                 $chapter_uid++
             }
 
@@ -1505,139 +1721,209 @@ function mode_single_core {
             <ChapterLanguage>eng</ChapterLanguage>
           </ChapterDisplay>
         </ChapterAtom>
-"@ | Out-File -FilePath $CHAPTERS_XML -Append -Encoding utf8
+"@ | Out-File -LiteralPath $CHAPTERS_XML -Append -Encoding utf8
         }
 
         @'
   </EditionEntry>
 </Chapters>
-'@ | Out-File -FilePath $CHAPTERS_XML -Append -Encoding utf8
-    } else {
+'@ | Out-File -LiteralPath $CHAPTERS_XML -Append -Encoding utf8
+    }
+    else {
         info_uncheck 6 "No chapters to save"
     }
 
-    $allowed_languages_ai = @("en", "en-US", "en-GB", "en-CA", "en-AU", "de", "fr", "es", "it", "ja", "zh", "zh-CN", "zh-TW", "ar")
-
-    if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($script:RU_TRANS -eq "on")) {
-        voice_sub
-    } elseif (($allowed_languages_ai -notcontains $script:LANGUAGE) -and ($script:RU_TRANS -eq "on")) {
-        $script:NOT_SUPP_TRANS = $true
-        info_uncheck 6 "Translation from $($script:LANGUAGE.ToUpper()) language into Russian is not supported"
-    }
-
     if ($script:status -eq $true) {
-        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($script:LANGUAGE -ne "ru") -and ($script:LANGUAGE -ne "N/A") -and ($script:RU_TRANS -eq "on")) {
+        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($script:LANGUAGE -ne "ru") -and ($script:LANGUAGE -ne "N/A") -and ($script:RU_TRANS -ne "off") -and ($ru_trans_unsupport -eq $false)) {
             $SUFFIX = "_RUS"
-        } else {
+        }
+        else {
             $SUFFIX = ""
         }
 
         $FINAL_MKV = "$script:PROJECT_DIR\${FILENAME}_${UPLOAD_DATE}${SUFFIX}_${ACTUAL_HEIGHT}p.mkv"
 
-        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($script:RU_TRANS -eq "on")) {
-            # === ОРИГИНАЛЬНЫЙ ГОЛОС + РУССКАЯ ОЗВУЧКА + 2 СУБТИТРА ===
+        # === ОРИГИНАЛЬНЫЙ ГОЛОС + РУССКАЯ ОЗВУЧКА + 2 СУБТИТРА ===
 
-            # FFmpeg аудио-микширование
-            & $FFMPEG_FILE `
-                -i "$script:PROJECT_DIR\${FILENAME}.mkv" `
-                -i "$script:PROJECT_DIR\${FILENAME}.mp3" `
-                -i "$script:PROJECT_DIR\${FILENAME}.ru.srt" `
-                -i "$script:PROJECT_DIR\${FILENAME}.en.srt" `
-                -filter_complex @"
-        [0:a]aformat=channel_layouts=stereo[bg];
+        # Собираем аргументы в массив
+        $ff_args = @(
+            "${FFMPEG_FILE}"
+            "-i", "${PROJECT_DIR}/${FILENAME}.mkv"
+        )
 
-        [1:a]aformat=channel_layouts=mono,
-        volume=1.8,
-        asplit=2[voice_sc][voice_mix];
-
-        [bg]loudnorm=I=-22:LRA=7:TP=-2[bg_norm];
-
-        [bg_norm][voice_sc]sidechaincompress=
-            threshold=0.03:
-            ratio=6:
-            attack=10:
-            release=500:
-            knee=6:
-            makeup=4
-        [bg_duck];
-
-        [voice_mix]pan=stereo|c0=c0|c1=c0[voice_stereo];
-
-        [bg_duck][voice_stereo]amix=inputs=2:weights=1 1.6
-            duration=longest:
-            dropout_transition=1
-        [a_mix];
-
-        [a_mix]loudnorm=I=-16:LRA=9:TP=-1.5[a_mixed]
-"@ `
-                -map 0:v `
-                -map "[a_mixed]" `
-                -map 1:a `
-                -map 0:a `
-                -map 2:s `
-                -map 3:s `
-                -metadata:s:s:0 title='AI Yandex Rus' `
-                -metadata:s:s:0 language=rus `
-                -metadata:s:s:1 title='AI Yandex Eng' `
-                -metadata:s:s:1 language=eng `
-                -c:v copy `
-                -c:a:0 aac -b:a:0 128k `
-                -c:a:1 copy `
-                -c:a:2 copy `
-                -c:s copy `
-                -metadata title="$TITLE" `
-                -metadata:s:a:0 title="AAC 2 ch 128 kbps AI Yandex Mixed Rus" `
-                -metadata:s:a:0 language=rus `
-                -metadata:s:a:1 title="MP3 1 ch 128 kbps AI Yandex Rus" `
-                -metadata:s:a:1 language=rus `
-                -metadata:s:a:2 title="AAC 2 ch 128 kbps $(yt_to_mkv_lang $LANGUAGE | ForEach-Object { $_.Substring(0,1).ToUpper() + $_.Substring(1) })" `
-                -metadata:s:a:2 language=$(yt_to_mkv_lang $LANGUAGE) `
-                -progress pipe:1 -nostats `
-                "$FINAL_MKV" 2>&1 | ForEach-Object {
-                    if ($_ -match "out_time=(\d{2}):(\d{2}):(\d{2})\.(\d{2})") {
-                        $sec = [int]$matches[1]*3600 + [int]$matches[2]*60 + [int]$matches[3]
-                        $percent = ($sec / $global:DURATION) * 100
-                        Write-Host -NoNewline "`r          Audio mixing: $([math]::Round($percent,0))%"
-                    }
-                }
-            # Очищаем строку
-            Write-Host -NoNewline "`r`e[2K"
-
-            & $MKVPROPEDIT_FILE `
-                "$FINAL_MKV" `
-                --edit track:a1 --set flag-default=1 `
-                --edit track:a2 --set flag-default=0 `
-                --edit track:a3 --set flag-default=0 `
-                --edit track:s1 --set flag-default=0 `
-                --edit track:s2 --set flag-default=0 *> $null
-
-            info_triple 6 "Voice " "RU" " added"
-            info_triple 6 "Subtitles " "RU" " added"
-            info_triple 6 "Subtitles " "EN" " added"
-
-        } else {
-            # === ЛЮБОЙ ГОЛОС, КРОМЕ ПЕРЕВОДНОГО ===
-            $langCode = yt_to_mkv_lang $LANGUAGE
-            $langName = $langCode.Substring(0,1).ToUpper() + $langCode.Substring(1)
-            
-            & $FFMPEG_FILE `
-                -i "$script:PROJECT_DIR\${FILENAME}.mkv" `
-                -map 0:v `
-                -map 0:a `
-                -c copy `
-                -metadata title="$TITLE" `
-                -metadata:s:a:0 title="AAC 2 ch 128 kbps $langName" `
-                -metadata:s:a:0 language=$(yt_to_mkv_lang $LANGUAGE) `
-                "$FINAL_MKV" 2>$null
-
-            info_triple 6 "Video metadata updated"
+        # Добавляем файл озвучки (только -i, без -map)
+        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "vo")) {
+            $ff_args += @("-i", "${PROJECT_DIR}/${FILENAME}.mp3")
         }
 
+        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "sb")) {
+            # Добавляем субтитры как входные файлы (только -i, без -map)
+            $ff_args += @("-i", "${PROJECT_DIR}/${FILENAME}.ru.srt")
+            $ff_args += @("-i", "${PROJECT_DIR}/${FILENAME}.en.srt")
+        }
+
+        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "vo")) {
+            $ff_args += @(
+                "-filter_complex",
+                "[0:a]aformat=channel_layouts=stereo[bg];
+            [1:a]aformat=channel_layouts=mono,
+            volume=1.8,
+            asplit=2[voice_sc][voice_mix];
+            [bg]loudnorm=I=-22:LRA=7:TP=-2[bg_norm];
+            [bg_norm][voice_sc]sidechaincompress=
+                threshold=0.03:
+                ratio=6:
+                attack=10:
+                release=500:
+                knee=6:
+                makeup=4
+            [bg_duck];
+            [voice_mix]pan=stereo|c0=c0|c1=c0[voice_stereo];
+            [bg_duck][voice_stereo]amix=inputs=2:weights=1 1.6
+                duration=longest:
+                dropout_transition=1
+            [a_mix];
+            [a_mix]loudnorm=I=-16:LRA=9:TP=-1.5[a_mixed]"
+            )
+        }
+
+        $ff_args += @(
+            "-map", "0:v"      # Поток видео
+        )
+
+        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "vo")) {
+            $ff_args += @(
+                "-map", "[a_mixed]",
+                "-map", "1:a"
+            )
+        }
+
+        $ff_args += @(
+            "-map", "0:a"      # Поток аудио оригинальный
+        )
+
+        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "sb")) {
+            # Добавляем MAP для выходного файла (после всех входных)
+            # Определяем индекс первого субтитра
+            # Всегда: 0 - mkv
+            # Далее: если есть mp3, то 1 - mp3, затем 2 - ru.srt, 3 - en.srt
+            #        если нет mp3, то 1 - ru.srt, 2 - en.srt
+            $srt_index = 2  # По умолчанию (когда есть mp3)
+            # Проверяем, был ли добавлен mp3
+            if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "sb")) {
+                $srt_index = 1  # Если нет mp3, то субтитры на индексах 1 и 2
+            }
+            $ff_args += @("-map", "${srt_index}:s")
+            $srt_index = $srt_index + 1
+            $ff_args += @("-map", "${srt_index}:s")
+            $ff_args += @("-metadata:s:s:0", "title=AI Yandex Rus")
+            $ff_args += @("-metadata:s:s:0", "language=rus")
+            $ff_args += @("-metadata:s:s:1", "title=AI Yandex Eng")
+            $ff_args += @("-metadata:s:s:1", "language=eng")
+        }
+
+        if (($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "vo") -and ($ru_trans_unsupport -eq $false)) {
+            $a_index = 2
+        }
+        else {
+            $a_index = 0
+        }
+
+        $ff_args += @(
+            "-c:v", "copy"      # Копируем видео без изменений
+        )
+
+        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "vo")) {
+            $ff_args += @(
+                "-c:a:0", "aac",     # Первый аудиопоток (смешанный) кодируем в AAC
+                "-b:a:0", "128k",    # Битрейт для первого аудиопотока
+                "-c:a:1", "copy"     # Второй аудиопоток (RU голос) копируем без изменений
+            )
+        }
+
+        $ff_args += @(
+            "-c:a:${a_index}", "copy"    # Третий или единственный оригинальный аудиопоток копируем без изменений
+        )
+
+        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "sb")) {
+            $ff_args += @(
+                "-c:s", "copy"      # Копируем субтитры без изменений
+            )
+        }
+
+        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "vo")) {
+            $ff_args += @(
+                "-metadata:s:a:0", "title=AAC 2 ch 128 kbps AI Yandex Mixed Rus",
+                "-metadata:s:a:0", "language=rus",
+                "-metadata:s:a:1", "title=MP3 1 ch 128 kbps AI Yandex Rus",
+                "-metadata:s:a:1", "language=rus"
+            )
+        }
+
+        $raw_lang = (yt_to_mkv_lang "$LANGUAGE")
+        $formatted_lang = $raw_lang.Substring(0, 1).ToUpper() + $raw_lang.Substring(1).ToLower()
+
+        $ff_args += @(
+            "-metadata:s:a:${a_index}", "title=AAC 2 ch 128 kbps $formatted_lang",
+            "-metadata:s:a:${a_index}", "language=$raw_lang"
+        )
+
+        $ff_args += @(
+            "-metadata", "title=${TITLE}",
+            "-progress", "pipe:1",
+            "-nostats",
+            "${FINAL_MKV}"
+        )
+
+        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "vo")) {
+            # Запускаем и обрабатываем прогресс
+            & $ff_args[0] $ff_args[1..($ff_args.Count - 1)] 2>&1 | ForEach-Object {
+                if ($_ -match "out_time=(\d{2}):(\d{2}):(\d{2})\.(\d{2})") {
+                    $sec = [int]$matches[1] * 3600 + [int]$matches[2] * 60 + [int]$matches[3]
+                    $percent = ($sec / $global:DURATION) * 100
+                    Write-Host -NoNewline "`r          Audio mixing: $($percent.ToString("F1"))%"
+                }
+            }
+            # Очищаем строку
+            Write-Host -NoNewline "`r`e[2K" 
+        }
+        else {
+            & $ff_args[0] $ff_args[1..($ff_args.Count - 1)] >$null 2>&1
+        }
+
+        $mkv_args = @(
+            "${MKVPROPEDIT_FILE}",
+            "${FINAL_MKV}"
+        )
+
+        if (Test-Path "${PROJECT_DIR}/${FILENAME}.mp3") {
+            $mkv_args += @(
+                "--edit", "track:a1", "--set", "flag-default=1",
+                "--edit", "track:a2", "--set", "flag-default=0",
+                "--edit", "track:a3", "--set", "flag-default=0"
+            )
+            info_triple 6 "Voice " "RU" " added"
+            Remove-Item "${PROJECT_DIR}/${FILENAME}.mp3" -Force
+        }
+
+        if ((Test-Path "${PROJECT_DIR}/${FILENAME}.ru.srt") -and (Test-Path "${PROJECT_DIR}/${FILENAME}.en.srt")) {
+            $mkv_args += @(
+                "--edit", "track:s1", "--set", "flag-default=0",
+                "--edit", "track:s2", "--set", "flag-default=0"
+            )
+            info_triple 6 "Subtitles " "RU" " added"
+            info_triple 6 "Subtitles " "EN" " added"
+        }
+
+        & $mkv_args[0] $mkv_args[1..($mkv_args.Count - 1)] >$null 2>&1
+
         if (Test-Path $CHAPTERS_XML) {
-            & $MKVPROPEDIT_FILE "$FINAL_MKV" --chapters "$CHAPTERS_XML" 2>$null
+            & $MKVPROPEDIT_FILE "$FINAL_MKV" --chapters "$CHAPTERS_XML" > $null 2>&1
             Remove-Item -Path $CHAPTERS_XML -Force
             info_check 6 "Chapters added"
         }
+
+        info_triple 6 "Video metadata updated"
 
         Remove-Item -Path "$script:PROJECT_DIR\${FILENAME}.mkv" -Force -ErrorAction SilentlyContinue
 
@@ -1647,20 +1933,13 @@ function mode_single_core {
 
         $NEW_PROJECT_DIR = $script:PROJECT_DIR -replace '_temp$', ''
 
-        # Копирование через Robocopy
+        # Синхронизация, а не копирование с удалением на случай, если в целевой директории будет несколько видео, например, разного разрешения
         robocopy $script:PROJECT_DIR $NEW_PROJECT_DIR /E > $null
-        Remove-Item -Path $script:PROJECT_DIR -Recurse -Force
-
-        $script:PROJECT_DIR = ""
-        $NEW_PROJECT_DIR = ""
+        Remove-Item -LiteralPath $script:PROJECT_DIR -Recurse -Force
     }
     
     Write-Host ""
-    if ($script:status -eq $false) {
-        info_color 6 "Failed" $RED
-    } else {
-        info_color 6 "Completed" $GREEN
-    }
+    info_color 6 "Completed" $GREEN
 }
 
 function render_status {
@@ -1683,7 +1962,7 @@ function mode_single {
     menu_trans_ai_switch
     $script:TRN = "/ → Ru: $script:RU_TRANS"
 
-    if ($script:RU_TRANS -eq "on") {
+    if ($script:RU_TRANS -ne "off") {
         menu_force_lng
         $script:LNG = "/ Force lang: $script:FORCE_LNG"
     }
@@ -1744,7 +2023,15 @@ function mode_batch_common {
 
         $script:URL_LIST_PATH = clean_path $url_list_path_raw
 
-        $_f_ = Split-Path $URL_LIST_PATH -Leaf
+        $_f_ = if ([string]::IsNullOrWhiteSpace($URL_LIST_PATH)) {
+            error 6 "Path to the URLs list file cannot be empty"
+            press_enter_repeat
+            continue
+        }
+        else {
+            Split-Path $URL_LIST_PATH -Leaf
+        }
+
         $BASENAME_URL_LIST_PATH = [System.IO.Path]::GetFileNameWithoutExtension($_f_)
 
         # Проверка существования файла
@@ -1800,9 +2087,10 @@ function mode_batch_common {
 
             if ([string]::IsNullOrEmpty($link)) {
                 # info_uncheck 6 "URL not found in line: $line_number"
-                "[ FAIL ] $line_raw" | Out-File -FilePath $script:ERRORS_FILE -Append -Encoding utf8
+                "[ FAIL ] $line_raw" | Out-File -LiteralPath $script:ERRORS_FILE -Append -Encoding utf8
                 continue
-            } else {
+            }
+            else {
                 # Увеличиваем счетчик для каждой строки (включая пустые)
                 $line_number++
             }
@@ -1820,7 +2108,8 @@ function mode_batch_common {
             $global:YT_VIDEO_ID = get_youtube_id $link
             if ([string]::IsNullOrEmpty($global:YT_VIDEO_ID)) {
                 $script:status = $false
-            } else {
+            }
+            else {
                 # Вызов callback-функции
                 & $callback
             }
@@ -1830,7 +2119,7 @@ function mode_batch_common {
                 $reject_number++
                 Write-Host ""
                 info_uncheck 6 "Error at one of steps → rejected"
-                "[ $global:current_ERROR ]: $line_raw" | Out-File -FilePath $script:ERRORS_FILE -Append -Encoding utf8
+                "[ $global:current_ERROR ]: $line_raw" | Out-File -LiteralPath $script:ERRORS_FILE -Append -Encoding utf8
                 if ($script:PROJECT_DIR -and (Test-Path $script:PROJECT_DIR)) {
                     Remove-Item -Path $script:PROJECT_DIR -Recurse -Force -ErrorAction SilentlyContinue
                 }
@@ -1839,8 +2128,9 @@ function mode_batch_common {
             # Удаляем верхнюю строку из QUEUE_FILE
             $queueContent = Get-Content $script:QUEUE_FILE
             if ($queueContent.Count -gt 1) {
-                $queueContent[1..($queueContent.Count-1)] | Out-File -FilePath $script:QUEUE_FILE -Encoding utf8
-            } else {
+                $queueContent[1..($queueContent.Count - 1)] | Out-File -LiteralPath $script:QUEUE_FILE -Encoding utf8
+            }
+            else {
                 Clear-Content -Path $script:QUEUE_FILE
             }
 
@@ -1853,16 +2143,16 @@ function mode_batch_common {
                     Write-Host -NoNewline "`e[?25l"
                     $input = Read-Host
                     if ([string]::IsNullOrEmpty($input)) {
-                    # вверх на 3 строки
-                    Write-Host -NoNewline "`e[3A"
-                    # очищаем 3 строки по очереди
-                    Write-Host -NoNewline "`e[2K"   # строка 1 (верхняя)
-                    Write-Host -NoNewline "`e[1B"
-                    Write-Host -NoNewline "`e[2K"   # строка 2
-                    Write-Host -NoNewline "`e[1B"
-                    Write-Host -NoNewline "`e[2K"   # строка 3
-                    # возвращаемся обратно на исходную позицию (на 2 строки вверх)
-                    Write-Host -NoNewline "`e[2A"
+                        # вверх на 3 строки
+                        Write-Host -NoNewline "`e[3A"
+                        # очищаем 3 строки по очереди
+                        Write-Host -NoNewline "`e[2K"   # строка 1 (верхняя)
+                        Write-Host -NoNewline "`e[1B"
+                        Write-Host -NoNewline "`e[2K"   # строка 2
+                        Write-Host -NoNewline "`e[1B"
+                        Write-Host -NoNewline "`e[2K"   # строка 3
+                        # возвращаемся обратно на исходную позицию (на 2 строки вверх)
+                        Write-Host -NoNewline "`e[2A"
                         break
                     }
                 }
@@ -1875,8 +2165,8 @@ function mode_batch_common {
         Write-Host ""
         $completed = $line_number - $reject_number
         info_color_bi 9 "Total: " $GRAY "    $line_number" $CYAN "" ""
-        info_color_bi 9 "Completed: " $GRAY "    $completed" $GREEN "" ""
-        info_color_bi 9 "Rejected: " $GRAY "    $reject_number" $RED "" ""
+        info_color_bi 9 "Completed: " $GRAY "$completed" $GREEN "" ""
+        info_color_bi 9 "Rejected: " $GRAY " $reject_number" $RED "" ""
 
         press_enter
         # Показать курсор
@@ -1891,7 +2181,7 @@ function mode_batch {
 
     $script:IRT = ""
     if ($global:interrupt -eq $true) {
-         $script:IRT = " i"
+        $script:IRT = " i"
     }
     $script:RES = ""
     $script:TRN = ""
@@ -1906,7 +2196,7 @@ function mode_batch {
     menu_trans_ai_switch
     $script:TRN = "/ → Ru: $script:RU_TRANS"
 
-    if ($script:RU_TRANS -eq "on") {
+    if ($script:RU_TRANS -ne "off") {
         menu_force_lng
         $script:LNG = "/ Force lang: $script:FORCE_LNG"
 
@@ -1940,7 +2230,13 @@ function mode_list {
         # Проверка на пустое имя
         if ([string]::IsNullOrEmpty($YT_CHANNEL_raw)) {
             error 6 "Channel name cannot be empty"
-        } else {
+            error 6 "Press Enter to repeat..."
+            Read-Host
+            # Показать курсор
+            Write-Host -NoNewline "`e[?25h"
+            continue
+        }
+        else {
             $YT_CHANNEL = $YT_CHANNEL_raw
 
             # Обработка YT_CHANNEL
@@ -1954,7 +2250,8 @@ function mode_list {
                 if ($slashIndex -ne -1) {
                     $YT_CHANNEL = $YT_CHANNEL.Substring(0, $slashIndex)
                 }
-            } else {
+            }
+            else {
                 # Если @ нет, добавляем @ в начало
                 $YT_CHANNEL = "@$YT_CHANNEL"
                 # И потом удаляем всё после / (если есть)
@@ -1963,7 +2260,8 @@ function mode_list {
                     $YT_CHANNEL = $YT_CHANNEL.Substring(0, $slashIndex)
                 }
             }
-
+            
+            New-Item -ItemType Directory -Path $script:WORKDIR -Force | Out-Null
             $FILE_CH_TEMP = "$global:WORKDIR\${YT_CHANNEL}.tmp"
 
             # Выводим начальный текст
@@ -1986,7 +2284,7 @@ function mode_list {
                     --force-ipv4 `
                     --flat-playlist `
                     --print "%(title)s - https://youtu.be/%(id)s" `
-                    "https://www.youtube.com/${yt_channel}/videos" 2>$null | Out-File -FilePath $file_ch_temp -Encoding utf8
+                    "https://www.youtube.com/${yt_channel}/videos" 2>$null | Out-File -LiteralPath $file_ch_temp -Encoding utf8
             } -ArgumentList $YT_DLP_FILE, $FFMPEG_FILE, ${global:YT_BROWSER}, ${global:YT_PROFILE_PATH}, $NODE_EXE, $YT_CHANNEL, $FILE_CH_TEMP
 
             # Рисуем спиннер в основном потоке, пока задание выполняется
@@ -2010,7 +2308,8 @@ function mode_list {
             $fileInfo = Get-Item $FILE_CH_TEMP -ErrorAction SilentlyContinue
             if ($fileInfo -and $fileInfo.Length -gt 0) {
                 Move-Item -Path $FILE_CH_TEMP -Destination $FILE_CH_FINAL -Force
-            } else {
+            }
+            else {
                 Remove-Item -Path $FILE_CH_TEMP -Force -ErrorAction SilentlyContinue
                 error 6 "File not created"
             }
@@ -2046,7 +2345,7 @@ function check_voice_core {
 
     # Сохраняем JSON во временный файл для jq
     $tempJsonFile = [System.IO.Path]::GetTempFileName()
-    $result_json | Out-File -FilePath $tempJsonFile -Encoding utf8 -NoNewline
+    $result_json | Out-File -LiteralPath $tempJsonFile -Encoding utf8 -NoNewline
 
     $result_meta = & $JQ_FILE -r @'
     {
@@ -2074,8 +2373,8 @@ function check_voice_core {
     $data_array = $raw_data -split "`t"
 
     $script:LANGUAGE = $data_array[0]
-    $script:CHANNEL = $data_array[1]
-    $script:TITLE = $data_array[2]
+    $script:CHANNEL = get_clean_string -RawTitle $data_array[1]
+    $script:TITLE = get_clean_string -RawTitle $data_array[2]
     $script:UPLOAD_DATE = $data_array[3]
 
     if ([string]::IsNullOrEmpty($result_meta)) {
@@ -2084,35 +2383,22 @@ function check_voice_core {
         error 6 "$msg"
         $global:current_ERROR = $msg
         return $false
-    } else {
+    }
+    else {
         info_triple 6 "Title: " "$script:TITLE" ""
     }
 
-    # 1. Заменяем опасные символы файловой системы на подчеркивания
-    # 2. Удаляем апострофы
-    # 3. Удаляем эмодзи и прочие нестандартные символы
-    # 4. Сжимаем множественные пробелы/подчеркивания в один
-    # 5. Сжатие подряд идущих _
-    # 6. Обрезаем строку до 200 символов
-    # 7. Убираем пробелы и _ по краям
     $script:FILENAME = $script:TITLE
     # Замена опасных символов
     $script:FILENAME = $script:FILENAME -replace '[/\\:*?"<>|]+', '_'
-    # Удаление апострофов
-    $script:FILENAME = $script:FILENAME -replace "'", ''
     # Удаление эмодзи и нестандартных символов (оставляем буквы, цифры, пробелы, ., -, _, !)
     $script:FILENAME = $script:FILENAME -replace '[^\p{L}\p{N}\ .\-_!]', ''
     # Пробелы в подчеркивания
     $script:FILENAME = $script:FILENAME -replace '[ ]+', '_'
-    # Сжатие множественных подчеркиваний
-    $script:FILENAME = $script:FILENAME -replace '_+', '_'
     # Обрезаем до 200 символов (по байтам UTF-8, сохраняя целые символы)
     if ($script:FILENAME.Length -gt 200) {
         $script:FILENAME = $script:FILENAME.Substring(0, 200)
     }
-    # Убираем подчеркивания и пробелы по краям
-    $script:FILENAME = $script:FILENAME -replace '^[_ ]+', ''
-    $script:FILENAME = $script:FILENAME -replace '[_ ]+$', ''
 
     $script:PROJECT_DIR = "$global:WORKDIR\${CHANNEL}_CHECK_VOICE\${UPLOAD_DATE}_${FILENAME}_CHECK_VOICE"
     New-Item -ItemType Directory -Path $script:PROJECT_DIR -Force | Out-Null
@@ -2121,20 +2407,24 @@ function check_voice_core {
     $allowed_languages_ai = @("en", "en-US", "en-GB", "en-CA", "en-AU", "de", "fr", "es", "it", "ja", "zh", "zh-CN", "zh-TW", "ar")
 
     if ($allowed_languages_ai -contains $script:LANGUAGE) {
-        voice_sub
-    } elseif ($allowed_languages_ai -notcontains $script:LANGUAGE) {
+        download_voice
+        $global:subs_lang = @("ru", "en")
+        download_subs "https://www.youtube.com/watch?v=${YT_VIDEO_ID}" `
+            "${PROJECT_DIR}" `
+            "${FILENAME}" `
+            $subs_lang
+    }
+    elseif ($allowed_languages_ai -notcontains $script:LANGUAGE) {
         info_uncheck 6 "Translation from $($script:LANGUAGE.ToUpper()) language into Russian is not supported"
     }
 
-    if ($script:status -eq $false) {
-        Remove-Item -Path $script:PROJECT_DIR -Recurse -Force
-    }
-    $script:PROJECT_DIR = ""
-
     Write-Host ""
+
     if ($script:status -eq $false) {
         info_color 6 "Failed" $RED
-    } else {
+        Remove-Item -Path $script:PROJECT_DIR -Recurse -Force
+    }
+    else {
         info_color 6 "Completed" $GREEN
     }
 }
@@ -2174,22 +2464,41 @@ if ($majorVersion -lt 7) {
 }
 
 # =========================
+# Размер окна Терминала
+# =========================
+
+$ui = $Host.UI.RawUI
+$size = $ui.WindowSize
+
+$size.Width = 120
+$size.Height = 40
+
+$ui.WindowSize = $size
+
+# =========================
 # Проверка зависимостей
 # =========================
 
 Clear-Host
 Write-Host ""
 $failed = 0
-if (-not (check_file $YT_DLP_FILE   "YT-dlp"))   { $failed = 1 }
-if (-not (check_file $JQ_FILE       "Jq"))       { $failed = 1 }
-if (-not (check_file $FFMPEG_FILE   "FFmpeg"))   { $failed = 1 }
-if (-not (check_file $FFPROBE_FILE  "FFprobe"))  { $failed = 1 }
-if (-not (check_file $MKVPROPEDIT_FILE  "Mkvpropedit"))   { $failed = 1 }
-if (-not (check_file $NODE_EXE  "Node"))   { $failed = 1 }
-if (-not (check_file $VOT_CLI_JS  "VOT-cli-live"))   { $failed = 1 }
+if (-not (check_file $YT_DLP_FILE   "YT-dlp")) { $failed = 1 }
+if (-not (check_file $JQ_FILE       "Jq")) { $failed = 1 }
+if (-not (check_file $FFMPEG_FILE   "FFmpeg")) { $failed = 1 }
+if (-not (check_file $FFPROBE_FILE  "FFprobe")) { $failed = 1 }
+if (-not (check_file $MKVPROPEDIT_FILE  "Mkvpropedit")) { $failed = 1 }
+if (-not (check_file $NODE_EXE  "Node")) { $failed = 1 }
+if (-not (check_file $VOT_CLI_JS  "VOT-cli-live")) { $failed = 1 }
 
 if ($failed -ne 0) {
+    Write-Host ""
     error 3 "Required files are missing!"
+    Write-Host ""
+    info_color 3 "Press Enter to exit" "$CYAN"
+    # Скрыть курсор
+    Write-Host -NoNewline "`e[?25l"
+    Read-Host
+
     " " * 12 -split '' | ForEach-Object { Write-Host $_ }
     exit 1
 }
