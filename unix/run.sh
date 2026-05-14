@@ -2075,7 +2075,7 @@ mode_batch_common()
 
     # Если рабочая директория по каким-либо причинам отсутствует
     # Создаём каталог, проверяя права доступа
-    check_access_dir "${WORKDIR}"
+    check_access_dir "${WORKDIR}" || exit 1
 
     datetime=$(date '+%Y_%m_%d_%H-%M-%S')
 
