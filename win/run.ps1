@@ -18,7 +18,7 @@ Clear-Host
 # Название и версия ПО
 # =========================
 
-$ABOUT = "451saver v3.7.0"
+$ABOUT = "451saver v3.7.1"
 
 # Меняем заголовок окна
 $Host.UI.RawUI.WindowTitle = $ABOUT
@@ -1814,7 +1814,7 @@ function mode_single_core {
                 duration=longest:
                 dropout_transition=1
             [a_mix];
-            [a_mix]loudnorm=I=-16:LRA=9:TP=-1.5[a_mixed]"
+            [a_mix]loudnorm=I=-16:LRA=9:TP=-1.5,aformat=sample_rates=48000[a_mixed]"
             )
         }
 
