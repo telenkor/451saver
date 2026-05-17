@@ -7,7 +7,7 @@ touch ~/.hushlogin
 # Название и версия ПО
 # =========================
 
-ABOUT="451saver v3.6.2"
+ABOUT="451saver v3.7.0"
 
 # Меняем заголовок окна
 echo -ne "\033]0;$ABOUT\007"
@@ -315,45 +315,32 @@ get_youtube_id()
 
 # Очищаем строку от апострофов, эмодзи и лишних пробелов
 get_clean_string() {
-    local input="$1"
-    # Удаление апострофов
-    # Удаление эмодзи и нестандартных символов (оставляем буквы, цифры, пробелы, .,-_!?[])
-    # Убираем подчеркивания и пробелы по краям
-    # Сжатие множественных подчеркиваний
-    echo "$input" | \
-        sed "s/'//g" | \
-        perl -CSDA -pe 's/[^\p{L}\p{N} .\-_!?,\[\]]//g' | \
-        sed -E 's/ +/ /g; s/^[_ ]+//; s/[_ ]+$//' | \
-        sed -E 's/_+/_/g'
+  local input="$1"
+  # Удаление апострофов
+  # Удаление эмодзи и нестандартных символов (оставляем буквы, цифры, пробелы, .,-_!?[])
+  # Убираем подчеркивания и пробелы по краям
+  # Сжатие множественных подчеркиваний
+  echo "$input" | \
+    sed "s/'//g" | \
+    perl -CSDA -pe 's/[^\p{L}\p{N} .\-_!?,\[\]]//g' | \
+    sed -E 's/ +/ /g; s/^[_ ]+//; s/[_ ]+$//' | \
+    sed -E 's/_+/_/g'
 }
 
 # Проверка прав на запись в каталог
 check_access_dir() {
-    local dir="$1"
+  local dir="$1"
 
-    if mkdir -p "$dir" 2>/dev/null; then
-        return 0
-    else
-        error 6 "Access to ${dir} is denied"
-        error 6 "Run Terminal with Root or change the Working Directory"
-        echo ""
-        info_color 6 "Press Enter to close this window..." $CYAN
-        # </dev/tty нужен, так как stdin уже занят или перенаправлен и read -r читает не клавиатуру,
-        # а уже «пустой» поток ввода, поэтому делаем чтение напрямую из терминала
-        read -r </dev/tty
-        return 1
-    fi
-}
-
-# Ищем и переименовываем только что скачанный MKV файл
-search_rename_mkv()
-{
-  MKV_FILE=("${PROJECT_DIR}"/*.mkv)
-  if [ -f "${MKV_FILE[0]}" ]; then
-    info_check 6 "Video saved"
-    mv "${MKV_FILE[0]}" "${PROJECT_DIR}/${FILENAME}.mkv"
+  if mkdir -p "$dir" 2>/dev/null; then
     return 0
   else
+    error 6 "Access to ${dir} is denied"
+    error 6 "Run Terminal with Root or change the Working Directory"
+    echo ""
+    info_color 6 "Press Enter to close this window..." $CYAN
+    # </dev/tty нужен, так как stdin уже занят или перенаправлен и read -r читает не клавиатуру,
+    # а уже «пустой» поток ввода, поэтому делаем чтение напрямую из терминала
+    read -r </dev/tty
     return 1
   fi
 }
@@ -421,7 +408,7 @@ download_subs()
           result=1 # по умолчанию ошибка
 
           case "$ans" in
-          y | Y)
+          y | Y | н | Н )
             SRT_FILE=("${WORKDIR}"/*.srt)
             if [ -f "${SRT_FILE[0]}" ]; then
               mv "${SRT_FILE[0]}" "${PROJECT_DIR}/${FILENAME}.${lang}.srt"
@@ -440,7 +427,7 @@ download_subs()
               clear_lines 9
             fi
             ;;
-          n | N)
+          n | N | т | Т )
             clear_lines 6
 
             status=false
@@ -465,7 +452,6 @@ download_subs()
 
         # Скрыть курсор
         printf "\033[?25l"
-
       elif [[ "$ai_ru_pause" == "false" ]]; then
         status=false
         msg="Subtitles $(tr '[:lower:]' '[:upper:]' <<<"$lang") not downloaded"
@@ -523,7 +509,7 @@ download_voice()
         result=1 # по умолчанию ошибка
 
         case "$ans" in
-        y | Y)
+        y | Y | н | Н )
           MP3_FILE=("${WORKDIR}"/*.mp3)
           if [ -f "${MP3_FILE[0]}" ]; then
             mv "${MP3_FILE[0]}" "${PROJECT_DIR}/${FILENAME}.mp3"
@@ -542,7 +528,7 @@ download_voice()
             clear_lines 9
           fi
           ;;
-        n | N)
+        n | N | т | Т )
           clear_lines 7
 
           status=false
@@ -994,10 +980,10 @@ use_saved_config()
       read -r ans
 
       case "$ans" in
-      y | Y)
+      y | Y | н | Н )
         return 0
         ;;
-      n | N)
+      n | N | т | Т )
         return 1
         ;;
       *)
@@ -1009,6 +995,47 @@ use_saved_config()
     fi
   done
   return 1
+}
+
+# Меню упрощенного режима хранения видео
+menu_light_storage()
+{
+  storage="full"
+
+  while true; do
+    logo
+
+    eval "$mode"
+
+    info_color 6 "Light storage"
+    echo ""
+    info_color 6 "When choosing lightweight storage, all videos will be in" $GRAY
+    info_color 6 "one channel directory, and there will be no other files." $GRAY
+    info_color 6 "Otherwise, each video will be in its own directory along" $GRAY
+    info_color 6 "with metadata, previews, subtitles, and chapters." $GRAY
+    echo ""
+
+    # Показать курсор
+    printf "\033[?25h"
+
+    info_color_bi 6 "Use light storage? [" "$CYAN" "y/n" "$RED" "]:" "$CYAN"
+    echo -n $'\033[6C'
+    read -r "_storage_"
+
+    case $_storage_ in
+    y | Y | н | Н )
+      storage="light"
+      break
+      ;;
+    n | N | т | Т )
+      storage="full"
+      break
+      ;;
+    *)
+      invalid_input
+      ;;
+    esac
+  done
 }
 
 # Mеню разрешений видео
@@ -1107,11 +1134,11 @@ menu_pause_switch()
     read -r "ai_ru_pause"
 
     case $ai_ru_pause in
-    y | Y)
+    y | Y | н | Н )
       ai_ru_pause=true
       break
       ;;
-    n | N)
+    n | N | т | Т )
       ai_ru_pause=false
       break
       ;;
@@ -1435,10 +1462,19 @@ mode_single_core()
       sed -E 's/[ ]+/_/g'
   )
 
-  PROJECT_DIR="${WORKDIR}/${CHANNEL}/${UPLOAD_DATE}_${FILENAME}_temp"
+  # Поведение в зависимости от значения Light storage
+  if [[ "$storage" == "full" ]]; then
+    PROJECT_DIR="${WORKDIR}/${CHANNEL}/${UPLOAD_DATE}_${FILENAME}_temp"
+  else
+    PROJECT_DIR="${WORKDIR}/${CHANNEL}"
+  fi
+
   # Создаём каталог, проверяя права доступа
   check_access_dir "${PROJECT_DIR}" || exit 1
-  echo "$result_meta" > "${PROJECT_DIR}/info.txt"
+  # Поведение в зависимости от значения Light storage
+  if [[ "$storage" == "full" ]]; then
+    echo "$result_meta" >"${PROJECT_DIR}/info.txt"
+  fi
 
   allowed_languages_ai=("en" "en-US" "en-GB" "en-CA" "en-AU" "de" "fr" "es" "it" "ja" "ko" "zh" "zh-CN" "zh-TW" "lt" "lv" "ar")
 
@@ -1469,19 +1505,13 @@ mode_single_core()
     ru_trans_unsupport="true"
   fi
 
-  # Формат:
-  # 1) avc1 (приоритет)
-  # 2) иначе любой лучший (vp9/av1 и т.д.)
-  # 3) если выбранное разрешение не входит в список доступных, тогда берём ближайшее меньшее, в случае "${USER_RESOLUTION}" == "Best" берём максимально возможное
   if [[ "${USER_RESOLUTION}" == "Best" ]]; then
-    FORMAT="bestvideo[vcodec^=avc1]+bestaudio"
+    FORMAT="bestvideo+bestaudio"
     ACTUAL_HEIGHT=$(echo $RESOLUTIONS | tr ' ' '\n' | sort -n | tail -1)
     info_triple 6 "Resolution: " "${ACTUAL_HEIGHT}p"
   else
     height="${USER_RESOLUTION%p}"
-    FORMAT="bestvideo[vcodec^=avc1][height<=${height}]+bestaudio\
-        /bestvideo[height<=${height}]+bestaudio\
-        /best[height<=${height}]"
+    FORMAT="bestvideo[height=${height}]+bestaudio / bestvideo[height<=${height}]+bestaudio / best"
 
     ACTUAL_HEIGHT=""
 
@@ -1532,7 +1562,7 @@ mode_single_core()
     --merge-output-format
     mkv
     -o
-    "${PROJECT_DIR}/%(title)s.%(ext)s"
+    "${PROJECT_DIR}/${FILENAME}.%(ext)s"
     --
     "${YT_VIDEO_ID}"
   )
@@ -1545,54 +1575,33 @@ mode_single_core()
   # Запускаем скачивание
   "${yt_dlp_full[@]}"
 
-  # Ищем полученный файл и пытаемся его переименовать
-  # В случае ошибки инициируем скачивание с другим Форматом
-  if ! search_rename_mkv; then
-    # Очищаем строку с предупреждением о неудачной загрузке на предыдущем шаге
-    clear_lines 1
-    # Блок 2: Опции формата
-    if [[ "${USER_RESOLUTION}" == "Best" ]]; then
-      FORMAT="bestvideo+bestaudio"
+  # Ищем полученный MKV файл
+  if [ -f "${PROJECT_DIR}/${FILENAME}.mkv" ]; then
+    info_check 6 "Video saved"
+  else
+    status=false
+    msg="MKV file not found in: ${PROJECT_DIR}"
+    error 6 "$msg"
+    ERROR="$msg"
+    # Защита от бесполезного выполнения, если на итерации произошла ошибка
+    return 1
+  fi
+
+  # Поведение в зависимости от значения Light storage
+  if [[ "$storage" == "full" ]]; then
+    # Получение миниатюры
+    curl -s -o "${PROJECT_DIR}/thumbnail.jpg" "https://i.ytimg.com/vi/${YT_VIDEO_ID}/maxresdefault.jpg" >/dev/null 2>&1
+
+    if [[ -f "${PROJECT_DIR}/thumbnail.jpg" ]]; then
+      info_check 6 "Thumbnail saved"
     else
-      FORMAT="bestvideo[height<=${height}]+bestaudio"
-    fi
-
-    yt_dlp_format=(
-      -f
-      "$FORMAT"
-    )
-    # Создаём команду
-    yt_dlp_full=(
-      "${yt_dlp_base[@]}"
-      "${yt_dlp_format[@]}"
-      "${yt_dlp_output[@]}"
-    )
-    # Запускаем скачивание
-    "${yt_dlp_full[@]}"
-
-    # Если и в этот раз скачать не удалось, то останавливаемся
-    if ! search_rename_mkv; then
       status=false
-      msg="MKV file not found in: ${PROJECT_DIR}"
+      msg="Failed to get thumbnail"
       error 6 "$msg"
       ERROR="$msg"
       # Защита от бесполезного выполнения, если на итерации произошла ошибка
       return 1
     fi
-  fi
-
-  # Получение миниатюры
-  curl -s -o "${PROJECT_DIR}/thumbnail.jpg" "https://i.ytimg.com/vi/${YT_VIDEO_ID}/maxresdefault.jpg" >/dev/null 2>&1
-
-  if [[ -f "${PROJECT_DIR}/thumbnail.jpg" ]]; then
-    info_check 6 "Thumbnail saved"
-  else
-    status=false
-    msg="Failed to get thumbnail"
-    error 6 "$msg"
-    ERROR="$msg"
-    # Защита от бесполезного выполнения, если на итерации произошла ошибка
-    return 1
   fi
 
   # Длительность видео
@@ -1621,8 +1630,11 @@ mode_single_core()
   CHAPTERS_XML="${PROJECT_DIR}/temp_chapters.xml"
 
   if [ -n "$CHAPTERS_RAW" ]; then
-    echo "$CHAPTERS_RAW" >"${PROJECT_DIR}/chapters.txt"
-    info_check 6 "Chapters saved"
+    # Поведение в зависимости от значения Light storage
+    if [[ "$storage" == "full" ]]; then
+      echo "$CHAPTERS_RAW" >"${PROJECT_DIR}/chapters.txt"
+      info_check 6 "Chapters saved"
+    fi
 
     echo '<?xml version="1.0" encoding="UTF-8"?>' >"$CHAPTERS_XML"
     echo '<!DOCTYPE Chapters SYSTEM "matroskachapters.dtd">' >>"$CHAPTERS_XML"
@@ -1717,7 +1729,6 @@ EOF
 
     if [[ " ${allowed_languages_ai[@]} " =~ " ${LANGUAGE} " ]] && [[ "$ru_trans_unsupport" == "false" ]] &&
       [[ "$RU_TRANS" == "vo+sb" || "$RU_TRANS" == "vo" ]]; then
-
       if [ "$OS_TYPE" = "Linux" ]; then
         # Запускаем прогресс в фоне и сохраняем его PID
         progress 10 "Audio mixing" &
@@ -1955,25 +1966,38 @@ EOF
 
     rm "${PROJECT_DIR}/${FILENAME}.mkv"
 
-    NEW_PROJECT_DIR="${PROJECT_DIR%_temp}"
+    # Поведение в зависимости от значения Light storage
+    if [[ "$storage" == "full" ]]; then
+      NEW_PROJECT_DIR="${PROJECT_DIR%_temp}"
 
-    # Синхронизация, а не копирование с удалением на случай, если в целевой директории будет несколько видео, например, разного разрешения
-    rsync -a "${PROJECT_DIR}/" "${NEW_PROJECT_DIR}/"
-    rm -rf "$PROJECT_DIR"
+      # Синхронизация, а не копирование с удалением на случай, если в целевой директории будет несколько видео, например, разного разрешения
+      rsync -a "${PROJECT_DIR}/" "${NEW_PROJECT_DIR}/"
+      rm -rf "${PROJECT_DIR}"
+    else
+      if [[ " ${allowed_languages_ai[@]} " =~ " ${LANGUAGE} " ]] && [[ "$ru_trans_unsupport" == "false" ]] &&
+        [[ "$RU_TRANS" == "vo+sb" || "$RU_TRANS" == "sb" ]]; then
+        rm "${PROJECT_DIR}/${FILENAME}.ru.srt"
+        rm "${PROJECT_DIR}/${FILENAME}.en.srt"
+      fi
+    fi
   fi
 
 }
 
 mode_single()
 {
+  STO=""
   RES=""
   TRN=""
   LNG=""
   mode='echo ""
-      info_color 3 "MODE: One URL $RES $TRN $LNG"
+      info_color 3 "MODE: One URL $STO $RES $TRN $LNG"
       echo ""
      '
   mode_id="single"
+
+  menu_light_storage
+  STO="/ Stor: ${storage}"
 
   menu_resolution
   RES="/ Quality: ${USER_RESOLUTION}"
@@ -2197,14 +2221,18 @@ mode_batch()
   if [ $interrupt = "true" ]; then
     IRT=" ⏯"
   fi
+  STO=""
   RES=""
   TRN=""
   LNG=""
   mode='echo ""
-        info_color 3 "MODE: Batch of URLs${IRT} $RES $TRN $LNG"
+        info_color 3 "MODE: Batch of URLs${IRT} $STO $RES $TRN $LNG"
         echo ""
      '
   mode_id="batch"
+
+  menu_light_storage
+  STO="/ Stor: ${storage}"
 
   menu_resolution
   RES="/ Quality: ${USER_RESOLUTION}"
