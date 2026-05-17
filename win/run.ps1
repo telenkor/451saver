@@ -18,7 +18,7 @@ Clear-Host
 # Название и версия ПО
 # =========================
 
-$ABOUT = "451saver v3.6.2"
+$ABOUT = "451saver v3.7.0"
 
 # Меняем заголовок окна
 $Host.UI.RawUI.WindowTitle = $ABOUT
@@ -333,7 +333,7 @@ function get_youtube_id {
 # Очищаем строку от апострофов, эмодзи и лишних пробелов
 function get_clean_string {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$RawTitle
     )
     # Удаление апострофов
@@ -353,7 +353,7 @@ function get_clean_string {
 # Проверка прав на запись в каталог
 function check_access_dir {
     param (
-        [Parameter(Mandatory=$true, HelpMessage="Specify the path to the directory being created")]
+        [Parameter(Mandatory = $true, HelpMessage = "Specify the path to the directory being created")]
         [string]$Path
     )
 
@@ -361,7 +361,8 @@ function check_access_dir {
     if (-not (Test-Path -Path $Path)) {
         try {
             New-Item -ItemType Directory -Path $Path -Force -ErrorAction Stop | Out-Null
-        } catch {
+        }
+        catch {
             # Если не смогли даже создать диреткорию
             handle_access_error $Path
         }
@@ -371,7 +372,7 @@ function check_access_dir {
     $testFile = Join-Path $Path "access_test_$(Get-Random).tmp"
     try {
         $temp = New-Item -ItemType File -Path $testFile -Force -ErrorAction Stop
-        Remove-Item -Path $testFile -ErrorAction SilentlyContinue | Out-Null
+        Remove-Item -LiteralPath $temp -ErrorAction SilentlyContinue | Out-Null
     }
     catch {
         # Если директория есть, но писать в неё нельзя
@@ -387,24 +388,6 @@ function handle_access_error {
     info_color 6 "Press Enter to close this window..." $CYAN
     Read-Host 
     exit 1
-}
-
-# Ищем и переименовываем только что скачанный MKV файл
-function search_rename_mkv {
-    $MKV_FILE = Get-ChildItem -LiteralPath "$script:PROJECT_DIR" -File | Where-Object { $_.Extension -eq ".mkv" }
-    if ($null -ne $MKV_FILE -and $MKV_FILE.Count -gt 0) {
-        info_check 6 "Video saved"
-
-        $src = $MKV_FILE[0].FullName
-        $dir = Split-Path $src
-        $dst = Join-Path $dir "${script:FILENAME}.mkv"
-        Remove-Item $dst -Force -ErrorAction SilentlyContinue
-        Rename-Item -Path $src -NewName "${script:FILENAME}.mkv"
-        return $true
-    }
-    else {
-        return $false
-    }
 }
 
 # Проверка зависимостей
@@ -468,8 +451,8 @@ function download_subs {
 
                     $result = 1 # по умолчанию ошибка
 
-                    switch ($ans) {
-                        "y" {
+                    switch -Regex ($ans) {
+                        "^[yн]$" {
                             $SRT_FILE = Get-ChildItem -LiteralPath "$WORKDIR" -File | Where-Object { $_.Extension -eq ".srt" }
                             # Проверяем, что переменная не пуста (существует хотя бы один файл)
                             if ($null -ne $SRT_FILE -and $SRT_FILE.Count -gt 0) {
@@ -489,7 +472,7 @@ function download_subs {
                                 clear_lines 9
                             }
                         }
-                        "n" {
+                        "^[nт]$" {
                             clear_lines 7
                         
                             $global:status = $false
@@ -591,8 +574,8 @@ function download_voice {
 
                 $result = 1 # по умолчанию ошибка
 
-                switch ($ans) {
-                    "y" {
+                switch -Regex ($ans) {
+                    "^[yн]$" {
                         $MP3_FILE = Get-ChildItem -LiteralPath "$WORKDIR" -File | Where-Object { $_.Extension -eq ".mp3" }
                         # Проверяем, что переменная не пуста (существует хотя бы один файл)
                         if ($null -ne $MP3_FILE -and $MP3_FILE.Count -gt 0) {
@@ -612,7 +595,7 @@ function download_voice {
                             break
                         }
                     }
-                    "n" {
+                    "^[nт]$" {
                         clear_lines 7
                         
                         $global:status = $false
@@ -1060,9 +1043,9 @@ function use_saved_config {
             Write-Host -NoNewline "`e[6C"
             $ans = (Read-Host).ToLower()
 
-            switch ($ans) {
-                "y" { return $true }
-                "n" { return $false }
+            switch -Regex ($ans) {
+                "^[yн]$" { return $true }
+                "^[nт]$" { return $false }
                 default { invalid_input }
             }
         }
@@ -1071,6 +1054,42 @@ function use_saved_config {
         }
     }
     return $false
+}
+
+# Меню упрощенного режима хранения видео
+function menu_light_storage {
+    $script:storage = "full"
+
+    while ($true) {
+        logo
+
+        render_status
+
+        info_color 6 "Light storage"
+        Write-Host ""
+        info_color 6 "When choosing lightweight storage, all videos will be in" $GRAY
+        info_color 6 "one channel directory, and there will be no other files." $GRAY
+        info_color 6 "Otherwise, each video will be in its own directory along" $GRAY
+        info_color 6 "with metadata, previews, subtitles, and chapters." $GRAY
+        Write-Host ""
+
+        # Показать курсор
+        Write-Host -NoNewline "`e[?25h"
+
+        info_color_bi 6 "Use light storage? [" "$CYAN" "y/n" "$RED" "]:" "$CYAN"
+        Write-Host -NoNewline "`e[6C"
+        $_storage_ = Read-Host
+
+        switch -Regex ($_storage_) {
+            "^[yн]$" { $script:storage = "light"; break }
+            "^[nт]$" { $script:storage = "full"; break }
+            default { invalid_input }
+        }
+        
+        if ($_storage_ -match "^[ynнт]$") {
+            break
+        }
+    }
 }
 
 # Меню разрешений видео
@@ -1172,15 +1191,13 @@ function menu_pause_switch {
         Write-Host -NoNewline "`e[6C"
         $ai_ru_pause_input = Read-Host
 
-        switch ($ai_ru_pause_input) {
-            "y" { $script:ai_ru_pause = $true; break }
-            "Y" { $script:ai_ru_pause = $true; break }
-            "n" { $script:ai_ru_pause = $false; break }
-            "N" { $script:ai_ru_pause = $false; break }
+        switch -Regex ($ai_ru_pause_input) {
+            "^[yн]$" { $script:ai_ru_pause = $true; break }
+            "^[nт]$" { $script:ai_ru_pause = $false; break }
             default { invalid_input }
         }
         
-        if ($ai_ru_pause_input -match "^[yYnN]$") {
+        if ($ai_ru_pause_input -match "^[ynнт]$") {
             break
         }
     }
@@ -1507,11 +1524,20 @@ function mode_single_core {
         $script:FILENAME = $script:FILENAME.Substring(0, 200)
     }
 
-    $script:PROJECT_DIR = "$WORKDIR\$CHANNEL\${UPLOAD_DATE}_${FILENAME}_temp"
+    # Поведение в зависимости от значения Light storage
+    if ($script:storage -eq "full") {
+        $script:PROJECT_DIR = "$WORKDIR\$CHANNEL\${UPLOAD_DATE}_${FILENAME}_temp"
+    }
+    else {
+        $script:PROJECT_DIR = "$WORKDIR\$CHANNEL"
+    }
     
     check_access_dir -Path $script:PROJECT_DIR
 
-    $result_meta | Out-File -LiteralPath "$script:PROJECT_DIR\info.txt" -Encoding utf8
+    # Поведение в зависимости от значения Light storage
+    if ($script:storage -eq "full") {
+        $result_meta | Out-File -LiteralPath "$script:PROJECT_DIR\info.txt" -Encoding utf8
+    }
 
     $allowed_languages_ai = @("en", "en-US", "en-GB", "en-CA", "en-AU", "de", "fr", "es", "it", "ja", "ko", "zh", "zh-CN", "zh-TW", "lt", "lv", "ar")
 
@@ -1544,22 +1570,17 @@ function mode_single_core {
         # но в то же время не должно изменяться значение $RU_TRANS
         $ru_trans_unsupport = $true
     }
-
-    # Формат:
-    # 1) avc1 (приоритет)
-    # 2) иначе любой лучший (vp9/av1 и т.д.)
-    # 3) если выбранное разрешение не входит в список доступных, тогда берём ближайшее меньшее
+    
     if ($global:USER_RESOLUTION -eq "Best") {
-        $global:FORMAT = "bestvideo[vcodec^=avc1]+bestaudio"
+        $global:FORMAT = "bestvideo+bestaudio"
+
         $resolutionsList = $script:RESOLUTIONS -split ' '
         $script:ACTUAL_HEIGHT = ($resolutionsList | ForEach-Object { [int]$_ } | Sort-Object | Select-Object -Last 1)
         info_triple 6 "Resolution: " "${ACTUAL_HEIGHT}p"
     }
     else {
         $height = [int]($global:USER_RESOLUTION -replace 'p$', '')
-        $global:FORMAT = "bestvideo[vcodec^=avc1][height<=${height}]+bestaudio " +
-        "/bestvideo[height<=${height}]+bestaudio " +
-        "/best[height<=${height}]"
+        $global:FORMAT = "bestvideo[height=${height}]+bestaudio / bestvideo[height<=${height}]+bestaudio / best"
 
         $script:ACTUAL_HEIGHT = $null
         $resolutionsList = $script:RESOLUTIONS -split ' ' | ForEach-Object { [int]$_ }
@@ -1602,7 +1623,7 @@ function mode_single_core {
     # Блок 3: Опции вывода и URL
     $yt_dlp_output = @(
         "--merge-output-format", "mkv"
-        "-o", "${PROJECT_DIR}/%(title)s.%(ext)s"
+        "-o", "${PROJECT_DIR}\${script:FILENAME}.%(ext)s"
         "--", "${YT_VIDEO_ID}"
     )
 
@@ -1613,52 +1634,33 @@ function mode_single_core {
     # Символ '&' (call operator) используется для запуска строки или пути в переменной
     & $yt_dlp_full[0] $yt_dlp_full[1..($yt_dlp_full.Length - 1)]
 
-    # Ищем полученный файл и пытаемся его переименовать
-    # В случае ошибки инициируем скачивание с другим Форматом
-    if (-not (search_rename_mkv)) {
-        # Очищаем строку с предупреждением (предполагается наличие функции clear_lines)
-        clear_lines 1
-
-        # Блок 2: Опции формата
-        if ($script:USER_RESOLUTION -eq "Best") {
-            $FORMAT = "bestvideo+bestaudio"
-        }
-        else {
-            # Аналог ${USER_RESOLUTION%p} — удаление буквы 'p' в конце строки
-            $FORMAT = "bestvideo[height<=$height]+bestaudio"
-        }
-
-        $yt_dlp_format = @("-f", "$FORMAT")
-
-        # Создаём команду
-        $yt_dlp_full = $yt_dlp_base + $yt_dlp_format + $yt_dlp_output
-
-        # Запускаем скачивание
-        # & — оператор вызова. Передаем имя файла и массив аргументов (начиная со второго элемента)
-        & $yt_dlp_full[0] $yt_dlp_full[1..($yt_dlp_full.Length - 1)]
-
-        # Если и в этот раз скачать не удалось
-        if (-not (search_rename_mkv)) {
-            $script:status = $false
-            $msg = "MKV file not found in: $script:PROJECT_DIR"
-            error 6 "$msg"
-            $global:current_ERROR = $msg
-            return
-        }
-    }
-
-    # Получение миниатюры
-    curl -s -o "$script:PROJECT_DIR\thumbnail.jpg" "https://i.ytimg.com/vi/${YT_VIDEO_ID}/maxresdefault.jpg" 2>$null
-
-    if (Test-Path -LiteralPath "$script:PROJECT_DIR\thumbnail.jpg" -PathType Leaf) {
-        info_check 6 "Thumbnail saved"
+    # Ищем полученный MKV файл
+    if (Test-Path -LiteralPath "$script:PROJECT_DIR\${script:FILENAME}.mkv" -PathType Leaf) {
+        info_check 6 "Video saved"
     }
     else {
         $script:status = $false
-        $msg = "Failed to get thumbnail"
+        $msg = "MKV file not found in: $script:PROJECT_DIR"
         error 6 "$msg"
         $global:current_ERROR = $msg
-        return $false
+        return
+    }
+
+    # Поведение в зависимости от значения Light storage
+    if ($script:storage -eq "full") {
+        # Получение миниатюры
+        curl -s -o "$script:PROJECT_DIR\thumbnail.jpg" "https://i.ytimg.com/vi/${YT_VIDEO_ID}/maxresdefault.jpg" 2>$null
+
+        if (Test-Path -LiteralPath "$script:PROJECT_DIR\thumbnail.jpg" -PathType Leaf) {
+            info_check 6 "Thumbnail saved"
+        }
+        else {
+            $script:status = $false
+            $msg = "Failed to get thumbnail"
+            error 6 "$msg"
+            $global:current_ERROR = $msg
+            return $false
+        }
     }
 
     # Длительность видео
@@ -1690,8 +1692,12 @@ function mode_single_core {
     $CHAPTERS_XML = "$script:PROJECT_DIR\temp_chapters.xml"
 
     if (-not [string]::IsNullOrEmpty($CHAPTERS_RAW)) {
-        $CHAPTERS_RAW | Out-File -LiteralPath "$script:PROJECT_DIR/chapters.txt" -Encoding utf8
-        info_check 6 "Chapters saved"
+
+        # Поведение в зависимости от значения Light storage
+        if ($script:storage -eq "full") {
+            $CHAPTERS_RAW | Out-File -LiteralPath "$script:PROJECT_DIR/chapters.txt" -Encoding utf8
+            info_check 6 "Chapters saved"
+        }
 
         @'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1921,17 +1927,17 @@ function mode_single_core {
             "${FINAL_MKV}"
         )
 
-        if (Test-Path "${PROJECT_DIR}/${FILENAME}.mp3") {
+        if (Test-Path "${PROJECT_DIR}\${FILENAME}.mp3") {
             $mkv_args += @(
                 "--edit", "track:a1", "--set", "flag-default=1",
                 "--edit", "track:a2", "--set", "flag-default=0",
                 "--edit", "track:a3", "--set", "flag-default=0"
             )
             info_triple 6 "Voice " "RU" " added"
-            Remove-Item "${PROJECT_DIR}/${FILENAME}.mp3" -Force
+            Remove-Item -LiteralPath "$script:PROJECT_DIR\${FILENAME}.mp3" -Force -ErrorAction SilentlyContinue
         }
 
-        if ((Test-Path "${PROJECT_DIR}/${FILENAME}.ru.srt") -and (Test-Path "${PROJECT_DIR}/${FILENAME}.en.srt")) {
+        if ((Test-Path "${PROJECT_DIR}\${FILENAME}.ru.srt") -and (Test-Path "${PROJECT_DIR}\${FILENAME}.en.srt")) {
             $mkv_args += @(
                 "--edit", "track:s1", "--set", "flag-default=0",
                 "--edit", "track:s2", "--set", "flag-default=0"
@@ -1944,23 +1950,28 @@ function mode_single_core {
 
         if (Test-Path $CHAPTERS_XML) {
             & $MKVPROPEDIT_FILE "$FINAL_MKV" --chapters "$CHAPTERS_XML" > $null 2>&1
-            Remove-Item -Path $CHAPTERS_XML -Force
+            Remove-Item -LiteralPath $CHAPTERS_XML -Force -ErrorAction SilentlyContinue
             info_check 6 "Chapters added"
         }
 
         info_triple 6 "Video metadata updated"
 
-        Remove-Item -Path "$script:PROJECT_DIR\${FILENAME}.mkv" -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath "$script:PROJECT_DIR\${FILENAME}.mkv" -Force -ErrorAction SilentlyContinue
 
-        if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($script:RU_TRANS -eq "on")) {
-            Remove-Item -Path "$script:PROJECT_DIR\${FILENAME}.mp3" -Force -ErrorAction SilentlyContinue
+        # Поведение в зависимости от значения Light storage
+        if ($script:storage -eq "full") {
+            $NEW_PROJECT_DIR = $script:PROJECT_DIR -replace '_temp$', ''
+            # Синхронизация, а не копирование с удалением на случай, если в целевой директории будет несколько видео, например, разного разрешения
+            robocopy $script:PROJECT_DIR $NEW_PROJECT_DIR /E > $null
+            Remove-Item -LiteralPath $script:PROJECT_DIR -Recurse -Force
         }
-
-        $NEW_PROJECT_DIR = $script:PROJECT_DIR -replace '_temp$', ''
-
-        # Синхронизация, а не копирование с удалением на случай, если в целевой директории будет несколько видео, например, разного разрешения
-        robocopy $script:PROJECT_DIR $NEW_PROJECT_DIR /E > $null
-        Remove-Item -LiteralPath $script:PROJECT_DIR -Recurse -Force
+        else {
+            if (($allowed_languages_ai -contains $script:LANGUAGE) -and ($ru_trans_unsupport -eq $false) -and ($RU_TRANS -eq "vo+sb" -or $RU_TRANS -eq "sb"))
+            {
+                Remove-Item -LiteralPath "$script:PROJECT_DIR\${FILENAME}.ru.srt" -Force -ErrorAction SilentlyContinue
+                Remove-Item -LiteralPath "$script:PROJECT_DIR\${FILENAME}.en.srt" -Force -ErrorAction SilentlyContinue
+            }
+        }
     }
     
     Write-Host ""
@@ -1969,17 +1980,21 @@ function mode_single_core {
 
 function render_status {
     Write-Host ""
-    info_color 3 "MODE: $($script:mode) $($script:RES) $($script:TRN) $($script:LNG)"
+    info_color 3 "MODE: $($script:mode) $($script:STO) $($script:RES) $($script:TRN) $($script:LNG)"
     Write-Host ""
 }
 
 function mode_single {
+    $script:STO = ""
     $script:RES = ""
     $script:TRN = ""
     $script:LNG = ""
     $script:mode_id = "single"
 
     $script:mode = "One URL"
+
+    menu_light_storage
+    $script:STO = "/ Stor: $script:storage"
 
     menu_resolution
     $script:RES = "/ Quality: $global:USER_RESOLUTION"
@@ -2208,12 +2223,16 @@ function mode_batch {
     if ($global:interrupt -eq $true) {
         $script:IRT = " i"
     }
+    $script:STO = ""
     $script:RES = ""
     $script:TRN = ""
     $script:LNG = ""
     $script:mode_id = "batch"
 
     $script:mode = "Batch of URLs$script:IRT"
+
+    menu_light_storage
+    $script:STO = "/ Stor: $script:storage"
 
     menu_resolution
     $script:RES = "/ Quality: $global:USER_RESOLUTION"
@@ -2448,7 +2467,7 @@ function check_voice_core {
 
     if ($script:status -eq $false) {
         info_color 6 "Failed" $RED
-        Remove-Item -Path $script:PROJECT_DIR -Recurse -Force
+        Remove-Item -LiteralPath $script:PROJECT_DIR -Recurse -Force
     }
     else {
         info_color 6 "Completed" $GREEN
