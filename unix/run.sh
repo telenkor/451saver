@@ -7,7 +7,7 @@ touch ~/.hushlogin
 # Название и версия ПО
 # =========================
 
-ABOUT="451saver v3.7.0"
+ABOUT="451saver v3.7.1"
 
 # Меняем заголовок окна
 echo -ne "\033]0;$ABOUT\007"
@@ -1761,7 +1761,7 @@ EOF
             dropout_transition=1
         [a_mix];
 
-        [a_mix]loudnorm=I=-16:LRA=9:TP=-1.5[a_mixed]"
+        [a_mix]loudnorm=I=-16:LRA=9:TP=-1.5,aformat=sample_rates=48000[a_mixed]"
       )
     fi
 
