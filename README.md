@@ -276,7 +276,7 @@
 ### Разрешение видео
 ![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_03.png)
 
-### Предложение скачать ИИ-озвучку
+### Предложение скачать ИИ перевод
 ![menu](https://github.com/telenkor/451saver/blob/main/assets/screenshots/screenshot_451saver_04.png)
 
 ### Форсирование языка
